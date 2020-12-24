@@ -1,6 +1,7 @@
 import argparse
 import pandas as pd
 import sys
+import gc
 
 def find_circo(dataframe, departement, circonscription):
     is_dep =  dataframe['département'] == departement
@@ -38,13 +39,21 @@ def corps(premier_tour, second_tour, tour, dataframe_second):
     if tour is False:
         for k, v, in second_tour.items():
             if k in dicocirc:
-                dicocirc[k].append(int(v))
+                if k == 'RIUDR':
+                    if 'RI' in dicocirc.keys() and dicocirc['RI'][0] > 0:
+                        dicocirc['RI'].append(int(v))
+                    elif 'UDR' in dicocirc.keys() and dicocirc['UDR'][0] > 0:
+                        dicocirc['UDR'].append(int(v))
+                    else:
+                        dicocirc[k].append(int(v))
+                else:
+                    dicocirc[k].append(int(v))
         print("| inscrits2 = ", int(dataframe_second['Inscrits']), sep = '')
         print("| votants2 = ", int(dataframe_second['Votants']), sep = '')
         print("| exprimes2 = ", int(dataframe_second['Exprimés']), sep = '')
         i = 1
         for k, v in sorted(dicocirc.items(), key=lambda x: x[1], reverse=True):
-            if v != [0, 0]:
+            if v != [0, 0] and v != [0]:
                 print("| candidat", i," = Inconnu", sep = '')
                 partie_name(k, i)
                 print("| suffrages", i, " = ", v[0], sep = '')
@@ -193,6 +202,8 @@ def couleur_hex(col_name, order_number):
         print("| hex", order_number, " = {{Infobox Parti politique français/couleurs|-FN}}", sep = '')
     elif col_name == 'CENTDEM':
         print("| hex", order_number, " = {{Infobox Parti politique français/couleurs|-CD}}", sep = '')
+    elif col_name == 'RI':
+        print("| hex", order_number, " = {{Infobox Parti politique français/couleurs|-RI}}", sep = '')
     else:
         print('error', col_name)
 
@@ -223,7 +234,7 @@ def couleur_hex_post(col_name, order_number, dictionary):
         print("| hex", order_number, " = {{Infobox Parti politique français/couleurs|-Verts}}", sep = '')
     elif col_name[:3] == 'FRN':
         print("| hex", order_number, " = {{Infobox Parti politique français/couleurs|-FN}}", sep = '')
-    elif col_name[:3] == 'MAJ':
+    elif col_name[:3] == 'MAJ' or col_name[:3] == 'ECI':
         print("| hex", order_number, " = {{Infobox Parti politique français/couleurs|-DIV}}", sep = '')
     elif col_name[:3] == 'RDG':
         print("| hex", order_number, " = {{Infobox Parti politique français/couleurs|-RDG}}", sep = '')
@@ -245,6 +256,8 @@ def couleur_hex_post(col_name, order_number, dictionary):
             print("| hex", order_number, " = {{Infobox Parti politique français/couleurs|-NPA}}", sep = '')
         elif dictionary[col_name] == 'Parti Des Travailleurs':
             print("| hex", order_number, " = {{Infobox Parti politique français/couleurs|-PT}}", sep = '')
+        elif dictionary[col_name] == 'Parti Ouvrier Indépendant':
+            print("| hex", order_number, " = {{Infobox Parti politique français/couleurs|-POI}}", sep = '')
         else:
             print("| hex", order_number, " = {{Infobox Parti politique français/couleurs|-EXG}}", sep = '')
     elif col_name[:3] == 'DVD':
@@ -288,6 +301,8 @@ def couleur_hex_post(col_name, order_number, dictionary):
             print("| hex", order_number, " = {{Infobox Parti politique français/couleurs|-CPNT}}", sep = '')
         elif dictionary[col_name] == 'Parti Occitan':
             print("| hex", order_number, " = {{Infobox Parti politique français/couleurs|-REG}}", sep = '')
+        elif dictionary[col_name] == "Parti Pirate":
+            print("| parti", order_number, " = {{Infobox Parti politique français/couleurs|-violet}}", sep = '')
         else:
             print("| hex", order_number, " = {{Infobox Parti politique français/couleurs|-DIV}}", sep = '')
     elif col_name[:3] == 'EXD':
@@ -423,11 +438,13 @@ def partie_name(col_name, order_number):
         print("| parti", order_number, " = [[Centre démocrate (France)|CD]]", sep = '')
     elif col_name == 'OCI':
         print("| parti", order_number, " = [[Organisation communiste révolutionnaire|OCI]]", sep = '')
+    elif col_name == 'RI':
+        print("| parti", order_number, " = [[Fédération nationale des républicains indépendants|RI]]", sep = '')
     else:
         print('error', col_name)
 
 def partie_name_post(col_name, order_number, dictionary):
-    if col_name[:3] == 'FDG':
+    if 'FDG' in col_name[:3]:
         print("| parti", order_number, " = [[Front de gauche (France)|FDG]]", sep = '')
     if col_name[:3] == 'RDG':
         print("| parti", order_number, " = [[Les Radicaux de gauche|RDG]]", sep = '')
@@ -435,7 +452,7 @@ def partie_name_post(col_name, order_number, dictionary):
         print("| parti", order_number, " = [[Mouvement démocrate (France)|MODEM]]", sep = '')
     elif col_name[:3] == 'UMP':
         print("| parti", order_number, " = [[Union pour un mouvement populaire|UMP]]", sep = '')
-    elif col_name[:3] == 'SOC' or col_name[:3] == 'SDC':
+    elif col_name[:3] == 'SOC' or col_name[:3] == 'SDC' or col_name[:3] == 'SCO':
         print("| parti", order_number, " = [[Parti socialiste (France)|PS]]", sep = '')
     elif col_name[:5] == 'NouvC':
         print("| parti", order_number, " = [[Les Centristes|LC]]", sep = '')
@@ -454,9 +471,11 @@ def partie_name_post(col_name, order_number, dictionary):
     elif col_name[:3] == 'FRN':
         print("| parti", order_number, " = [[Rassemblement national|FN]]", sep = '')
     elif col_name[:3] == 'MAJ':
-        print("| parti", order_number, " = [[Union pour un mouvement populaire|UMP]]", sep = '')
+        print("| parti", order_number, " = Majorité Présidentielle", sep = '')
     elif col_name[:3] == 'PRV':
         print("| parti", order_number, " = [[Parti radical (France)|PRV]]", sep = '')
+    elif col_name[:3] == 'ECI':
+        print("| parti", order_number, " = {{abréviation|DIV|Divers}}", sep = '')
     elif col_name[:3] == 'REG':
         if dictionary[col_name] == 'empty':
             print("| parti", order_number, " = [[Régionalisme (politique)|REG]]", sep = '')
@@ -473,7 +492,7 @@ def partie_name_post(col_name, order_number, dictionary):
             print("| parti", order_number, " = [[Nouveau Parti anticapitaliste|NPA]]", sep = '')
         elif dictionary[col_name] == 'Les Alternatifs' or dictionary[col_name] == 'Alternatifs (Solidarite, Ecologie, Gauche Alternative)':
             print("| parti", order_number, " = [[Les Alternatifs]]", sep = '')
-        elif dictionary[col_name] == 'Extrême gauche':
+        elif dictionary[col_name] == 'Extrême gauche' or dictionary[col_name] == 'Extreme Gauche':
             print("| parti", order_number, " = [[Extrême gauche en France|EXG]]", sep = '')
         elif dictionary[col_name] == 'Parti Des Travailleurs':
             print("| parti", order_number, " = [[Parti des travailleurs (France)|PT]]", sep = '')
@@ -489,6 +508,18 @@ def partie_name_post(col_name, order_number, dictionary):
             print("| parti", order_number, " = Candidat d'initiative pour une nouvelle politique à gauche", sep = '')
         elif dictionary[col_name] == 'Voix Des Travailleurs':
             print("| parti", order_number, " = [[Voix des travailleurs|VdT]]", sep = '')
+        elif dictionary[col_name] == "Union Pour L'Ecologie Et La Democratie":
+            print("| parti", order_number, " = Union pour l'écologie et la démocratie", sep = '')
+        elif dictionary[col_name] == "Pole Rennaissance Communiste En France":
+            print("| parti", order_number, " = [[Pôle de renaissance communiste en France|PRCF]]", sep = '')
+        elif dictionary[col_name] == 'Union Pour La Gauche Renovee':
+            print("| parti", order_number, " = {{abréviation|UGR|Union pour la gauche rénovée}}", sep = '')
+        elif dictionary[col_name] == 'Tous Ensemble A Gauche':
+            print("| parti", order_number, " = {{abréviation|TEG|Tous ensemble à gauche}}", sep = '')
+        elif dictionary[col_name] == "Parti Ouvrier Indépendant":
+            print("| parti", order_number, " = [[Parti ouvrier indépendant|POI]]", sep = '')
+        elif dictionary[col_name] == 'A Gauche Vraiment':
+            print("| parti", order_number, " = {{abréviation|GV|A gauche vraiment}}", sep = '')
         else:
             print("| parti", order_number, " = ", dictionary[col_name], sep = '')
     elif col_name[:3] == 'DVD':
@@ -522,6 +553,18 @@ def partie_name_post(col_name, order_number, dictionary):
             print("| parti", order_number, " = [[Droite libérale-chrétienne|DLC]]", sep = '')
         elif dictionary[col_name] == 'Alternative Liberale':
             print("| parti", order_number, " = [[Alternative libérale|AL]]", sep = '')
+        elif dictionary[col_name] == 'Parti De La Loi Naturelle':
+            print("| parti", order_number, " = [[Parti de la loi naturelle|PLN]]", sep = '')
+        elif 'Les Nouveaux Ecologistes Du Rassemblement Nature Et Animaux' in dictionary[col_name] or dictionary[col_name] == 'Le Trefle - Les Nouveaux Ecologistes':
+            print("| parti", order_number, " = [[Le Trèfle - Les nouveaux écologistes|NERNA]]", sep = '')
+        elif dictionary[col_name] == 'Union De La Droite Republicaine':
+            print("| parti", order_number, " = Union de la droite republicaine", sep = '')
+        elif dictionary[col_name] == 'Mouvement Des Reformateurs':
+            print("| parti", order_number, " = [[Mouvement des réformateurs|MDR]]", sep = '')
+        elif dictionary[col_name] == 'Parti Pour La Liberte':
+            print("| parti", order_number, " = {{abréviation|PL|Parti pour la liberté}}", sep = '')
+        elif dictionary[col_name] == 'Pour La Justice Et La Prosperite De La France':
+            print("| parti", order_number, " = {{abréviation|JPF|Pour la justice et la prospérité de la France}}", sep = '')
         else:
             print("| parti", order_number, " = ", dictionary[col_name], sep = '')
     elif col_name[:3] == 'DVG':
@@ -545,6 +588,8 @@ def partie_name_post(col_name, order_number, dictionary):
             print("| parti", order_number, " = [[Mouvement républicain et citoyen|MRC]]", sep = '')
         elif dictionary[col_name] == 'Parti Socialiste':
             print("| parti", order_number, " = [[Parti socialiste (France)|PS]]", sep = '')
+        elif dictionary[col_name] == 'Republique Et Democratie':
+            print("| parti", order_number, " = {{abréviation|RD|République et démocratie}}", sep = '')
         else:
             print("| parti", order_number, " = ", dictionary[col_name], sep = '')
     elif col_name[:3] == 'DIV':
@@ -575,7 +620,31 @@ def partie_name_post(col_name, order_number, dictionary):
         elif dictionary[col_name] == 'Parti Des Socioprofessionnels':
             print("| parti", order_number, " = Parti des socioprofessionnels", sep = '')
         elif dictionary[col_name] == "Rassemblement Pour L'Initiative Citoyenne":
-            print("| parti", order_number, " = Rassemblement pour l'initiative citoyenne", sep = '')
+            print("| parti", order_number, " = {{abréviation|RIC|Rassemblement pour l'initiative citoyenne}}", sep = '')
+        elif dictionary[col_name] == "Gip - Democratie Active":
+            print("| parti", order_number, " = {{abréviation|GIP|GIP - Démocratie active}}", sep = '')
+        elif dictionary[col_name] == "La France En Action":
+            print("| parti", order_number, " = {{abréviation|FA|La France en action}}", sep = '')
+        elif dictionary[col_name] == 'Union Nationale Ecologiste Sans Emploi':
+            print("| parti", order_number, " = {{abréviation|UNESE|Union nationale écologiste sans emploi}}", sep = '')
+        elif dictionary[col_name] == "Parti Des Droits De L'Homme":
+            print("| parti", order_number, " = {{abréviation|PDH|Parti des droits de l'Homme}}", sep = '')
+        elif dictionary[col_name] == "Solidaires Regions Ecologie":
+            print("| parti", order_number, " = {{abréviation|SRE|Solidaires régions écologie}}", sep = '')
+        elif dictionary[col_name] == "Union Des Citoyens Independants":
+            print("| parti", order_number, " = {{abréviation|UCI|Union des citoyens independants}}", sep = '')
+        elif dictionary[col_name] == "Divers":
+            print("| parti", order_number, " = {{abréviation|DIV|Divers}}", sep = '')
+        elif dictionary[col_name] == "Union Pour L'Ecologie Et La Democratie":
+            print("| parti", order_number, " = {{abréviation|UED|Union pour l'écologie et la démocratie}}", sep = '')
+        elif dictionary[col_name] == "Gard Fraternite":
+            print("| parti", order_number, " = {{abréviation|GF|Gard Fraternité}}", sep = '')
+        elif dictionary[col_name] == "Parti Du Vote Blanc":
+            print("| parti", order_number, " = {{abréviation|PVB|Parti du vote blanc}}", sep = '')
+        elif dictionary[col_name] == "Parti Pirate":
+            print("| parti", order_number, " = [[Parti pirate (France)|PR]]", sep = '')
+        elif dictionary[col_name] == "Parti De La Nation Occitane":
+            print("| parti", order_number, " = [[Parti de la nation occitane|PNO]]", sep = '')
         else:
             print("| parti", order_number, " = ", dictionary[col_name], sep = '')
     elif col_name[:3] == 'EXD':
@@ -588,17 +657,21 @@ def partie_name_post(col_name, order_number, dictionary):
         elif dictionary[col_name] == 'Parti Anti-Sioniste':
             print("| parti", order_number, " = [[Parti antisioniste|PAS]]", sep = '')
         elif dictionary[col_name] == 'Defendons La Chasse Et Nos Traditions':
-            print("| parti", order_number, " = Défendons la chasse et nos traditions", sep = '')
+            print("| parti", order_number, " = {{abréviation|DCT|Défendons la chasse et nos traditions}}", sep = '')
         elif dictionary[col_name] == 'Rassemblement Republicain Pour L Union Centriste':
-            print("| parti", order_number, " = Rassemblement républicain pour l'union centriste", sep = '')
+            print("| parti", order_number, " = {{abréviation|RRUC|Rassemblement républicain pour l'union centriste}}", sep = '')
         elif dictionary[col_name] == 'Sans Etiquette':
             print("| parti", order_number, " = [[Sans étiquette|SE]]", sep = '')
+        elif dictionary[col_name] == 'Alliance Populaire':
+            print("| parti", order_number, " = {{abréviation|AP|Alliance Populaire}}", sep = '')
+        elif dictionary[col_name] == 'Parti National Republicain':
+            print("| parti", order_number, " = {{abréviation|PNR|Parti national républicain}}", sep = '')
         else:
             print("| parti", order_number, " = ", dictionary[col_name], sep = '')
     elif col_name[:3] == 'ECO':
         if dictionary[col_name] == 'empty' or dictionary[col_name] == 'Ecologiste':
             print("| parti", order_number, " = [[Écologisme|ECO]]", sep = '')
-        elif dictionary[col_name] == 'Generation Ecologie':
+        elif dictionary[col_name] == 'Generation Ecologie' or dictionary[col_name] == 'Génération Écologie':
             print("| parti", order_number, " = [[Génération écologie|GE]]", sep = '')
         elif dictionary[col_name] == 'Les Verts':
             print("| parti", order_number, " = [[Les Verts (France)|LV]]", sep = '')
@@ -612,10 +685,26 @@ def partie_name_post(col_name, order_number, dictionary):
             print("| parti", order_number, " = [[Le Trèfle - Les nouveaux écologistes|Le Trèfle]]", sep = '')
         elif dictionary[col_name] == 'Mouvement Ecologiste Independant' or dictionary[col_name] == 'Mouvement Écologiste Indépendant':
             print("| parti", order_number, " = [[Mouvement écologiste indépendant|MEI]]", sep = '')
-        elif dictionary[col_name] == 'Mouvement Hommes-Animaux-Nature : Mhan' or dictionary[col_name] == 'Mouvement Homme Nature Animaux':
+        elif dictionary[col_name] == 'Mouvement Hommes-Animaux-Nature : Mhan' or dictionary[col_name] == 'Mouvement Homme Nature Animaux' or dictionary[col_name] == 'Mouvement Hommes Animaux Nature':
             print("| parti", order_number, " = [[Mouvement hommes animaux nature|MHAN]]", sep = '')
         elif dictionary[col_name] == 'Citoyennete Action Participation Pour Le 21E Siecle':
-            print("| parti", order_number, " = Citoyenneté action participation pour le 21{{e}} siècle", sep = '')
+            print("| parti", order_number, " = {{abréviation|CAP21e|Citoyenneté action participation pour le 21e siècle}}", sep = '')
+        elif dictionary[col_name] == 'Union Nationale Ecologiste':
+            print("| parti", order_number, " = {{abréviation|UNE|Union nationale écologiste}}", sep = '')
+        elif dictionary[col_name] == 'Ecologie Et Citoyens':
+            print("| parti", order_number, " = {{abréviation|EC|Ecologie et citoyens}}", sep = '')
+        elif dictionary[col_name] == 'Ecologiste Independant':
+            print("| parti", order_number, " = {{abréviation|EI|Ecologiste indépendant}}", sep = '')
+        elif dictionary[col_name] == 'Parti Ecologiste':
+            print("| parti", order_number, " = [[Parti écologiste|PE]]", sep = '')
+        elif dictionary[col_name] == 'Renouveau Ecologique':
+            print("| parti", order_number, " = {{abréviation|RE|Renouveau écologique}}", sep = '')
+        elif dictionary[col_name] == 'Nouveaux Ecologistes':
+            print("| parti", order_number, " = {{abréviation|NE|Nouveaux écologistes}}", sep = '')
+        elif dictionary[col_name] == 'Confederation Des Ecologistes Independants':
+            print("| parti", order_number, " = {{abréviation|CEI|Confédération des écologistes indépendants}}", sep = '')
+        elif dictionary[col_name] == 'Souverainete Ecologie Ruralite':
+            print("| parti", order_number, " = {{abréviation|SER|Souveraineté écologie ruralité}}", sep = '')
         else:
             print("| parti", order_number, " = ", dictionary[col_name], sep = '')
     elif col_name[:3] == 'COM':
@@ -623,12 +712,14 @@ def partie_name_post(col_name, order_number, dictionary):
             print("| parti", order_number, " = [[Communisme|COM]]", sep = '')
         elif dictionary[col_name] == 'Parti Communiste Francais' or dictionary[col_name] == 'Candidat De Rassemblement Presente Par Le Parti Comâ­Muniste Francais' or dictionary[col_name] == 'Candidat De Rassemblement Presente Par Le Pcf' or dictionary[col_name] == 'Candidat De Rassemblement Presente Par Le Parti Communiste Francais' or dictionary[col_name] == 'Candidat Rassemblement Pcf':
             print("| parti", order_number, " = [[Parti communiste français|PCF]]", sep = '')
+        elif dictionary[col_name] == 'Rassemblement Des Forces De Gauche':
+            print("| parti", order_number, " = {{abréviation|RFG|Rassemblement des forces de gauche}}", sep = '')
         else:
             print("| parti", order_number, " = ", dictionary[col_name], sep = '')
     else:
         print('error', col_name)
 
-sys.argv = ['circo.py', '-d', 'CHARENTE-MARITIME', '-c', '5']
+sys.argv = ['circo.py', '-d', "GARD", '-c', '5']
 #on recupere les options utilisateurs 
 parser = argparse.ArgumentParser(description="Gap filling programms")
 #recupere le fichier comportant les reads
@@ -637,138 +728,186 @@ parser.add_argument("-d", "--departement", required=True)
 parser.add_argument("-c", "--circo", required=True, type=int)
 param = parser.parse_args()
 
-##
+# #
 # 1958
-##
+# #
 
 t1958a = pd.read_excel('D:\Downloads\legis\LEGISLATIVES_1958-2012-xls - Copie\cdsp_legi1958t1_circ.xls', index_col=None)
 t1958b = pd.read_excel('D:\Downloads\legis\LEGISLATIVES_1958-2012-xls - Copie\cdsp_legi1958t2_circ.xls', index_col=None)
 
 t1958b_circo = find_circo(t1958b, param.departement, param.circo)
 
-monotour = exist_second(t1958b_circo)
-print("| titre = Résultats des élections législatives des 23 et 30 novembre 1958 de la ", param.circo, "e circonscription du ", param.departement.title(), sep = '')
-print("| references = <ref>Résultats des élections législatives françaises premier tour du 23/11/1958 par circonscription, cdsp_legi1958t1_circ.xls [fichier informatique], Banque de Données Socio-Politiques, Grenoble [producteur], Centre de Données Socio-politiques [diffuseur], février 2009.</ref>")
+if t1958b_circo.empty:
+    pass
+else:
+    monotour = exist_second(t1958b_circo)
+    print("| titre = Résultats des élections législatives des 23 et 30 novembre 1958 de la ", param.circo, "e circonscription du ", param.departement.title(), sep = '')
+    print("| references = <ref>Résultats des élections législatives françaises premier tour du 23/11/1958 par circonscription, cdsp_legi1958t1_circ.xls [fichier informatique], Banque de Données Socio-Politiques, Grenoble [producteur], Centre de Données Socio-politiques [diffuseur], février 2009.</ref>")
 
-t1958a_circo = find_circo(t1958a, param.departement, param.circo)
-premier_tour(t1958a_circo)
-subseta = t1958a_circo.iloc[:,7:t1958a_circo.size]
-subsetb = t1958b_circo.iloc[:,8:t1958b_circo.size]
-corps(subseta, subsetb, monotour, t1958b_circo)
+    t1958a_circo = find_circo(t1958a, param.departement, param.circo)
+    premier_tour(t1958a_circo)
+    subseta = t1958a_circo.iloc[:,7:t1958a_circo.size]
+    subsetb = t1958b_circo.iloc[:,8:t1958b_circo.size]
+    corps(subseta, subsetb, monotour, t1958b_circo)
 
-##
+    del (t1958a, t1958b, t1958b_circo, t1958a_circo)
+    gc.collect()
+
+# #
 # 1962
-##
+# #
 
 t1962a = pd.read_excel('D:\Downloads\legis\LEGISLATIVES_1958-2012-xls - Copie\cdsp_legi1962t1_circ.xls', index_col=None)
 t1962b = pd.read_excel('D:\Downloads\legis\LEGISLATIVES_1958-2012-xls - Copie\cdsp_legi1962t2_circ.xls', index_col=None)
 
 t1962b_circo = find_circo(t1962b, param.departement, param.circo)
 
-monotour = exist_second(t1962b_circo)
-print("| titre = Résultats des élections législatives des 18 et 25 novembre 1962 de la ", param.circo, "e circonscription du ", param.departement.title(), sep = '')
-print("| references = <ref>Résultats des élections législatives françaises premier tour du 18/11/1962 par circonscription, cdsp_legi1962t1_circ.xls [fichier informatique], Banque de Données Socio-Politiques, Grenoble [producteur], Centre de Données Socio-politiques [diffuseur], février 2009.</ref>")
+if t1962b_circo.empty:
+    pass
+else:
+    monotour = exist_second(t1962b_circo)
+    print("| titre = Résultats des élections législatives des 18 et 25 novembre 1962 de la ", param.circo, "e circonscription du ", param.departement.title(), sep = '')
+    print("| references = <ref>Résultats des élections législatives françaises premier tour du 18/11/1962 par circonscription, cdsp_legi1962t1_circ.xls [fichier informatique], Banque de Données Socio-Politiques, Grenoble [producteur], Centre de Données Socio-politiques [diffuseur], février 2009.</ref>")
 
-t1962a_circo = find_circo(t1962a, param.departement, param.circo)
-premier_tour(t1962a_circo)
-subseta = t1962a_circo.iloc[:,7:t1962a_circo.size]
-subsetb = t1962b_circo.iloc[:,8:t1962b_circo.size]
-corps(subseta, subsetb, monotour, t1962b_circo)
+    t1962a_circo = find_circo(t1962a, param.departement, param.circo)
+    premier_tour(t1962a_circo)
+    subseta = t1962a_circo.iloc[:,7:t1962a_circo.size]
+    subsetb = t1962b_circo.iloc[:,8:t1962b_circo.size]
+    corps(subseta, subsetb, monotour, t1962b_circo)
 
-##
+    del (t1962a, t1962b, t1962b_circo, t1962a_circo)
+
+    gc.collect()
+
+# #
 # 1967
-##
+# #
 
 t1967a = pd.read_excel('D:\Downloads\legis\LEGISLATIVES_1958-2012-xls - Copie\cdsp_legi1967t1_circ.xls', index_col=None)
 t1967b = pd.read_excel('D:\Downloads\legis\LEGISLATIVES_1958-2012-xls - Copie\cdsp_legi1967t2_circ.xls', index_col=None)
 
 t1967b_circo = find_circo(t1967b, param.departement, param.circo)
 
-monotour = exist_second(t1967b_circo)
-print("| titre = Résultats des élections législatives des 5 et 12 mars 1967 de la ", param.circo, "e circonscription du ", param.departement.title(), sep = '')
-print("| references = <ref>Résultats des élections législatives françaises premier tour du 05/03/1967 par circonscription, cdsp_legi1967t1_circ.xls [fichier informatique], Banque de Données Socio-Politiques, Grenoble [producteur], Centre de Données Socio-politiques [diffuseur], février 2009.</ref>")
+if t1967b_circo.empty:
+    pass
+else:
+    monotour = exist_second(t1967b_circo)
+    print("| titre = Résultats des élections législatives des 5 et 12 mars 1967 de la ", param.circo, "e circonscription du ", param.departement.title(), sep = '')
+    print("| references = <ref>Résultats des élections législatives françaises premier tour du 05/03/1967 par circonscription, cdsp_legi1967t1_circ.xls [fichier informatique], Banque de Données Socio-Politiques, Grenoble [producteur], Centre de Données Socio-politiques [diffuseur], février 2009.</ref>")
 
-t1967a_circo = find_circo(t1967a, param.departement, param.circo)
-premier_tour(t1967a_circo)
-subseta = t1967a_circo.iloc[:,7:t1967a_circo.size]
-subsetb = t1967b_circo.iloc[:,8:t1967b_circo.size]
-corps(subseta, subsetb, monotour, t1967b_circo)
+    t1967a_circo = find_circo(t1967a, param.departement, param.circo)
+    premier_tour(t1967a_circo)
+    subseta = t1967a_circo.iloc[:,7:t1967a_circo.size]
+    subsetb = t1967b_circo.iloc[:,8:t1967b_circo.size]
+    corps(subseta, subsetb, monotour, t1967b_circo)
 
-##
+    del (t1967a, t1967b, t1967b_circo, t1967a_circo)
+
+    gc.collect()
+
+# #
 # 1968
-##
+# #
 
 t1968a = pd.read_excel('D:\Downloads\legis\LEGISLATIVES_1958-2012-xls - Copie\cdsp_legi1968t1_circ.xls', index_col=None)
 t1968b = pd.read_excel('D:\Downloads\legis\LEGISLATIVES_1958-2012-xls - Copie\cdsp_legi1968t2_circ.xls', index_col=None)
 
 t1968b_circo = find_circo(t1968b, param.departement, param.circo)
 
-monotour = exist_second(t1968b_circo)
-print("| titre = Résultats des élections législatives des 23 et 30 juin 1968 de la ", param.circo, "e circonscription du ", param.departement.title(), sep = '')
-print("| references = <ref>Résultats des élections législatives françaises premier tour du 23/06/1968 par circonscription, cdsp_legi1968t1_circ.xls [fichier informatique], Banque de Données Socio-Politiques, Grenoble [producteur], Centre de Données Socio-politiques [diffuseur], février 2009.</ref>")
+if t1968b_circo.empty:
+    pass
+else:
+    monotour = exist_second(t1968b_circo)
+    print("| titre = Résultats des élections législatives des 23 et 30 juin 1968 de la ", param.circo, "e circonscription du ", param.departement.title(), sep = '')
+    print("| references = <ref>Résultats des élections législatives françaises premier tour du 23/06/1968 par circonscription, cdsp_legi1968t1_circ.xls [fichier informatique], Banque de Données Socio-Politiques, Grenoble [producteur], Centre de Données Socio-politiques [diffuseur], février 2009.</ref>")
 
-t1968a_circo = find_circo(t1968a, param.departement, param.circo)
-premier_tour(t1968a_circo)
-subseta = t1968a_circo.iloc[:,7:t1968a_circo.size]
-subsetb = t1968b_circo.iloc[:,8:t1968b_circo.size]
-corps(subseta, subsetb, monotour, t1968b_circo)
+    t1968a_circo = find_circo(t1968a, param.departement, param.circo)
+    premier_tour(t1968a_circo)
+    subseta = t1968a_circo.iloc[:,7:t1968a_circo.size]
+    subsetb = t1968b_circo.iloc[:,8:t1968b_circo.size]
+    corps(subseta, subsetb, monotour, t1968b_circo)
 
-##
+    del (t1968a, t1968b, t1968b_circo, t1968a_circo)
+
+    gc.collect()
+
+# #
 # 1973
-##
+# #
 
 t1973a = pd.read_excel('D:\Downloads\legis\LEGISLATIVES_1958-2012-xls - Copie\cdsp_legi1973t1_circ.xls', index_col=None)
 t1973b = pd.read_excel('D:\Downloads\legis\LEGISLATIVES_1958-2012-xls - Copie\cdsp_legi1973t2_circ.xls', index_col=None)
 
 t1973b_circo = find_circo(t1973b, param.departement, param.circo)
 
-monotour = exist_second(t1973b_circo)
-print("| titre = Résultats des élections législatives des 4 et 11 mars 1973 de la ", param.circo, "e circonscription du ", param.departement.title(), sep = '')
-print("| references = <ref>Résultats des élections législatives françaises premier tour du 11/03/1973 par circonscription, cdsp_legi1973t1_circ.xls [fichier informatique], Banque de Données Socio-Politiques, Grenoble [producteur], Centre de Données Socio-politiques [diffuseur], février 2009.</ref>")
+if t1958b_circo.empty:
+    pass
+else:
+    monotour = exist_second(t1973b_circo)
+    print("| titre = Résultats des élections législatives des 4 et 11 mars 1973 de la ", param.circo, "e circonscription du ", param.departement.title(), sep = '')
+    print("| references = <ref>Résultats des élections législatives françaises premier tour du 11/03/1973 par circonscription, cdsp_legi1973t1_circ.xls [fichier informatique], Banque de Données Socio-Politiques, Grenoble [producteur], Centre de Données Socio-politiques [diffuseur], février 2009.</ref>")
 
-t1973a_circo = find_circo(t1973a, param.departement, param.circo)
-premier_tour(t1973a_circo)
-subseta = t1973a_circo.iloc[:,7:t1973a_circo.size]
-subsetb = t1973b_circo.iloc[:,8:t1973b_circo.size]
-corps(subseta, subsetb, monotour, t1973b_circo)
+    t1973a_circo = find_circo(t1973a, param.departement, param.circo)
+    premier_tour(t1973a_circo)
+    subseta = t1973a_circo.iloc[:,7:t1973a_circo.size]
+    subsetb = t1973b_circo.iloc[:,8:t1973b_circo.size]
+    corps(subseta, subsetb, monotour, t1973b_circo)
 
-##
+    del (t1973a, t1973b, t1973b_circo, t1973a_circo)
+
+    gc.collect()
+
+# #
 # 1978
-##
+# #
 
 t1978a = pd.read_excel('D:\Downloads\legis\LEGISLATIVES_1958-2012-xls - Copie\cdsp_legi1978t1_circ.xls', index_col=None)
 t1978b = pd.read_excel('D:\Downloads\legis\LEGISLATIVES_1958-2012-xls - Copie\cdsp_legi1978t2_circ.xls', index_col=None)
 
 t1978b_circo = find_circo(t1978b, param.departement, param.circo)
 
-monotour = exist_second(t1978b_circo)
-print("| titre = Résultats des élections législatives des 12 et 18 mars 1978 de la ", param.circo, "e circonscription du ", param.departement.title(), sep = '')
-print("| references = <ref>Résultats des élections législatives françaises premier tour du 12/03/1978 par circonscription, cdsp_legi1978t1_circ.xls [fichier informatique], Banque de Données Socio-Politiques, Grenoble [producteur], Centre de Données Socio-politiques [diffuseur], février 2009.</ref>")
+if t1978b_circo.empty:
+    pass
+else:
+    monotour = exist_second(t1978b_circo)
+    print("| titre = Résultats des élections législatives des 12 et 18 mars 1978 de la ", param.circo, "e circonscription du ", param.departement.title(), sep = '')
+    print("| references = <ref>Résultats des élections législatives françaises premier tour du 12/03/1978 par circonscription, cdsp_legi1978t1_circ.xls [fichier informatique], Banque de Données Socio-Politiques, Grenoble [producteur], Centre de Données Socio-politiques [diffuseur], février 2009.</ref>")
 
-t1978a_circo = find_circo(t1978a, param.departement, param.circo)
-premier_tour(t1978a_circo)
-subseta = t1978a_circo.iloc[:,7:t1978a_circo.size]
-subsetb = t1978b_circo.iloc[:,8:t1978b_circo.size]
-corps(subseta, subsetb, monotour, t1978b_circo)
+    t1978a_circo = find_circo(t1978a, param.departement, param.circo)
+    premier_tour(t1978a_circo)
+    subseta = t1978a_circo.iloc[:,7:t1978a_circo.size]
+    subsetb = t1978b_circo.iloc[:,8:t1978b_circo.size]
+    corps(subseta, subsetb, monotour, t1978b_circo)
 
-##
+    del (t1978a, t1978b, t1978b_circo, t1978a_circo)
+
+    gc.collect()
+
+# #
 # 1981
-##
+# #
 
 t1981a = pd.read_excel('D:\Downloads\legis\LEGISLATIVES_1958-2012-xls - Copie\cdsp_legi1981t1_circ.xls', index_col=None)
 t1981b = pd.read_excel('D:\Downloads\legis\LEGISLATIVES_1958-2012-xls - Copie\cdsp_legi1981t2_circ.xls', index_col=None)
 
 t1981b_circo = find_circo(t1981b, param.departement, param.circo)
 
-monotour = exist_second_post(t1981b_circo)
-print("| titre = Résultats des élections législatives des 14 et 21 juin 1981 de la ", param.circo, "e circonscription du ", param.departement.title(), sep = '')
-print("| references = <ref>Résultats des élections législatives françaises premier tour du 14/06/1981 par circonscription, cdsp_legi1981t1_circ.xls [fichier informatique], Banque de Données Socio-Politiques, Grenoble [producteur], Centre de Données Socio-politiques [diffuseur], février 2009.</ref>")
+if t1981b_circo.empty:
+    pass
+else:
+    monotour = exist_second_post(t1981b_circo)
+    print("| titre = Résultats des élections législatives des 14 et 21 juin 1981 de la ", param.circo, "e circonscription du ", param.departement.title(), sep = '')
+    print("| references = <ref>Résultats des élections législatives françaises premier tour du 14/06/1981 par circonscription, cdsp_legi1981t1_circ.xls [fichier informatique], Banque de Données Socio-Politiques, Grenoble [producteur], Centre de Données Socio-politiques [diffuseur], février 2009.</ref>")
 
-t1981a_circo = find_circo(t1981a, param.departement, param.circo)
-premier_tour(t1981a_circo)
-subseta = t1981a_circo.iloc[:,6:t1981a_circo.size]
-subsetb = t1981b_circo.iloc[:,7:t1981b_circo.size]
-corps(subseta, subsetb, monotour, t1981b_circo)
+    t1981a_circo = find_circo(t1981a, param.departement, param.circo)
+    premier_tour(t1981a_circo)
+    subseta = t1981a_circo.iloc[:,6:t1981a_circo.size]
+    subsetb = t1981b_circo.iloc[:,7:t1981b_circo.size]
+    corps(subseta, subsetb, monotour, t1981b_circo)
+
+    del (t1981a, t1981b, t1981b_circo, t1981a_circo)
+
+    gc.collect()
 
 ##
 # 1988
@@ -779,13 +918,20 @@ t1988b = pd.read_excel('D:\Downloads\legis\LEGISLATIVES_1958-2012-xls - Copie\cd
 
 t1988b_circo = find_circo(t1988b , param.departement, param.circo)
 
-monotour = exist_second_post(t1988b_circo)
-print("| titre = Résultats des élections législatives des 5 et 12 juin 1988 de la ", param.circo, "e circonscription du ", param.departement.title(), sep = '')
-print("| references = <ref>Résultats des élections législatives françaises premier tour du 05/06/1988 par circonscription, cdsp_legi1988t1_circ.xls [fichier informatique], Banque de Données Socio-Politiques, Grenoble [producteur], Centre de Données Socio-politiques [diffuseur], février 2009.</ref>")
+if t1988b_circo.empty:
+    pass
+else:
+    monotour = exist_second_post(t1988b_circo)
+    print("| titre = Résultats des élections législatives des 5 et 12 juin 1988 de la ", param.circo, "e circonscription du ", param.departement.title(), sep = '')
+    print("| references = <ref>Résultats des élections législatives françaises premier tour du 05/06/1988 par circonscription, cdsp_legi1988t1_circ.xls [fichier informatique], Banque de Données Socio-Politiques, Grenoble [producteur], Centre de Données Socio-politiques [diffuseur], février 2009.</ref>")
 
-t1988a_circo = find_circo(t1988a, param.departement, param.circo)
-premier_tour(t1988a_circo)
-corps_post(t1988a_circo, t1988b_circo, monotour)
+    t1988a_circo = find_circo(t1988a, param.departement, param.circo)
+    premier_tour(t1988a_circo)
+    corps_post(t1988a_circo, t1988b_circo, monotour)
+
+    del (t1988a, t1988b, t1988b_circo, t1988a_circo)
+
+    gc.collect()
 
 ##
 # 1993
@@ -796,13 +942,20 @@ t1993b = pd.read_excel('D:\Downloads\legis\LEGISLATIVES_1958-2012-xls - Copie\cd
 
 t1993b_circo = find_circo(t1993b , param.departement, param.circo)
 
-monotour = exist_second_post(t1993b_circo)
-print("| titre = Résultats des élections législatives des 21 et 12 mars 1993 de la ", param.circo, "e circonscription du ", param.departement.title(), sep = '')
-print("| references = <ref>Résultats des élections législatives françaises premier tour du 21/03/1993 par circonscription, cdsp_legi1993t1_circ.xls [fichier informatique], Banque de Données Socio-Politiques, Grenoble [producteur], Centre de Données Socio-politiques [diffuseur], février 2009.</ref>")
+if t1993b_circo.empty:
+    pass
+else:
+    monotour = exist_second_post(t1993b_circo)
+    print("| titre = Résultats des élections législatives des 21 et 12 mars 1993 de la ", param.circo, "e circonscription du ", param.departement.title(), sep = '')
+    print("| references = <ref>Résultats des élections législatives françaises premier tour du 21/03/1993 par circonscription, cdsp_legi1993t1_circ.xls [fichier informatique], Banque de Données Socio-Politiques, Grenoble [producteur], Centre de Données Socio-politiques [diffuseur], février 2009.</ref>")
 
-t1993a_circo = find_circo(t1993a, param.departement, param.circo)
-premier_tour(t1993a_circo)
-corps_post(t1993a_circo, t1993b_circo, monotour)
+    t1993a_circo = find_circo(t1993a, param.departement, param.circo)
+    premier_tour(t1993a_circo)
+    corps_post(t1993a_circo, t1993b_circo, monotour)
+
+    del (t1993a, t1993b, t1993b_circo, t1993a_circo)
+
+    gc.collect()
 
 ##
 # 1997
@@ -813,13 +966,20 @@ t1997b = pd.read_excel('D:\Downloads\legis\LEGISLATIVES_1958-2012-xls - Copie\cd
 
 t1997b_circo = find_circo(t1997b , param.departement, param.circo)
 
-monotour = exist_second_post(t1997b_circo)
-print("| titre = Résultats des élections législatives des 25 et 12 mai 1997 de la ", param.circo, "e circonscription du ", param.departement.title(), sep = '')
-print("| references = <ref>Résultats des élections législatives françaises premier tour du 25/05/1997 par circonscription, cdsp_legi1997t1_circ.xls [fichier informatique], Banque de Données Socio-Politiques, Grenoble [producteur], Centre de Données Socio-politiques [diffuseur], février 2009.</ref>")
+if t1997b_circo.empty:
+    pass
+else:
+    monotour = exist_second_post(t1997b_circo)
+    print("| titre = Résultats des élections législatives des 21 et 12 mars 1997 de la ", param.circo, "e circonscription du ", param.departement.title(), sep = '')
+    print("| references = <ref>Résultats des élections législatives françaises premier tour du 21/03/1997 par circonscription, cdsp_legi1997t1_circ.xls [fichier informatique], Banque de Données Socio-Politiques, Grenoble [producteur], Centre de Données Socio-politiques [diffuseur], février 2009.</ref>")
 
-t1997a_circo = find_circo(t1997a, param.departement, param.circo)
-premier_tour(t1997a_circo)
-corps_post(t1997a_circo, t1997b_circo, monotour)
+    t1997a_circo = find_circo(t1997a, param.departement, param.circo)
+    premier_tour(t1997a_circo)
+    corps_post(t1997a_circo, t1997b_circo, monotour)
+
+    del (t1997a, t1997b, t1997b_circo, t1997a_circo)
+
+    gc.collect()
 
 ##
 # 2002
@@ -830,13 +990,20 @@ t2002b = pd.read_excel('D:\Downloads\legis\LEGISLATIVES_1958-2012-xls - Copie\cd
 
 t2002b_circo = find_circo(t2002b , param.departement, param.circo)
 
-monotour = exist_second_post(t2002b_circo)
-print("| titre = Résultats des élections législatives des 9 et 12 juin 2002 de la ", param.circo, "e circonscription du ", param.departement.title(), sep = '')
-print("| references = <ref>Résultats des élections législatives françaises premier tour du 09/06/2002 par circonscription, cdsp_legi2002t1_circ.xls [fichier informatique], Banque de Données Socio-Politiques, Grenoble [producteur], Centre de Données Socio-politiques [diffuseur], février 2009.</ref>")
+if t2002b_circo.empty:
+    pass
+else:
+    monotour = exist_second_post(t2002b_circo)
+    print("| titre = Résultats des élections législatives des 9 et 12 juin 2002 de la ", param.circo, "e circonscription du ", param.departement.title(), sep = '')
+    print("| references = <ref>Résultats des élections législatives françaises premier tour du 09/06/2002 par circonscription, cdsp_legi2002t1_circ.xls [fichier informatique], Banque de Données Socio-Politiques, Grenoble [producteur], Centre de Données Socio-politiques [diffuseur], février 2009.</ref>")
 
-t2002a_circo = find_circo(t2002a, param.departement, param.circo)
-premier_tour(t2002a_circo)
-corps_post(t2002a_circo, t2002b_circo, monotour)
+    t2002a_circo = find_circo(t2002a, param.departement, param.circo)
+    premier_tour(t2002a_circo)
+    corps_post(t2002a_circo, t2002b_circo, monotour)
+
+    del (t2002a, t2002b, t2002b_circo, t2002a_circo)
+
+    gc.collect()
 
 ##
 # 2007
@@ -847,13 +1014,20 @@ t2007b = pd.read_excel('D:\Downloads\legis\LEGISLATIVES_1958-2012-xls - Copie\cd
 
 t2007b_circo = find_circo(t2007b , param.departement, param.circo)
 
-monotour = exist_second_post(t2007b_circo)
-print("| titre = Résultats des élections législatives des 10 et 12 juin 2007 de la ", param.circo, "e circonscription du ", param.departement.title(), sep = '')
-print("| references = <ref>Résultats des élections législatives françaises premier tour du 10/06/2007 par circonscription, cdsp_legi2007t1_circ.xls [fichier informatique], Banque de Données Socio-Politiques, Grenoble [producteur], Centre de Données Socio-politiques [diffuseur], février 2009.</ref>")
+if t2007b_circo.empty:
+    pass
+else:
+    monotour = exist_second_post(t2007b_circo)
+    print("| titre = Résultats des élections législatives des 10 et 12 juin 2007 de la ", param.circo, "e circonscription du ", param.departement.title(), sep = '')
+    print("| references = <ref>Résultats des élections législatives françaises premier tour du 10/06/2007 par circonscription, cdsp_legi2007t1_circ.xls [fichier informatique], Banque de Données Socio-Politiques, Grenoble [producteur], Centre de Données Socio-politiques [diffuseur], février 2009.</ref>")
 
-t2007a_circo = find_circo(t2007a, param.departement, param.circo)
-premier_tour(t2007a_circo)
-corps_post(t2007a_circo, t2007b_circo, monotour)
+    t2007a_circo = find_circo(t2007a, param.departement, param.circo)
+    premier_tour(t2007a_circo)
+    corps_post(t2007a_circo, t2007b_circo, monotour)
+
+    del (t2007a, t2007b, t2007b_circo, t2007a_circo)
+
+    gc.collect()
 
 ##
 # 2012
@@ -871,3 +1045,7 @@ print("| references = <ref>Résultats des élections législatives françaises p
 t2012a_circo = find_circo(t2012a, param.departement, param.circo)
 premier_tour(t2012a_circo)
 corps_post(t2012a_circo, t2012b_circo, monotour)
+
+del (t2012a, t2012b, t2012b_circo, t2012a_circo)
+
+gc.collect()
