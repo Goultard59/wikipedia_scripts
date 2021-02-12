@@ -190,6 +190,142 @@ def corps_post(premier_tour, second_tour, tour, wikidata_name):
             i += 1
         print("}}")
 
+def switch_departement(argument):
+    switcher = {
+        'AISNE': "de l'",
+        'ALLIER': "de l'",
+        'ALPES-DE-HAUTE-PROVENCE': "des ",
+        'HAUTES-ALPES': "des ",
+        'ALPES-MARITIMES': "des ",
+        'ARDÈCHE': "de l'",
+        'ARDENNES': "des ",
+        'ARIÈGE': "de l'",
+        'AUBE': "de l'",
+        'AUDE': "de l'",
+        'AVEYRON': "de l'",
+        'BOUCHES-DU-RHÔNE': "des ",
+        'CALVADOS': "du ",
+        'CANTAL': "des ",
+        'CHARENTE': "de la ",
+        'CHARENTE-MARITIME': "de la ",
+        'CHER': "du ",
+        'CORRÈZE': "de la ",
+        'CORSE-DU-SUD': "de la ",
+        'HAUTE-CORSE': "de la ",
+        "CÔTE-D'OR": "de la ",
+        "CÔTES-D'ARMOR": "de la ",
+        'CREUSE': "de la ",
+        'DORDOGNE': "de la ",
+        'DOUBS': "du ",
+        'DRÔME': "de la ",
+        'EURE': "de l'",
+        'EURE-ET-LOIR': "de l'",
+        'FINISTÈRE': "du ",
+        'GARD': "du ",
+        'HAUTE-GARONNE': "de la ",
+        'GERS': "du ",
+        'GIRONDE': "de la ",
+        'HÉRAULT': "de l'",
+        'ILLE-ET-VILAINE': "de l'",
+        'INDRE': "de l'",
+        'INDRE-ET-LOIRE': "de l'",
+        'ISÈRE': "de l'",
+        'JURA': "du ",
+        'LANDES': "des ",
+        'LOIR-ET-CHER': "du ",
+        'LOIRE': "de la ",
+        'HAUTE-LOIRE': "de la ",
+        'LOIRE-ATLANTIQUE': "de la ",
+        'LOIRET': "du ",
+        'LOT': "du ",
+        'LOT-ET-GARONNE': "du ",
+        'LOZÈRE': "de la ",
+        'MAINE-ET-LOIRE': "de la ",
+        'MANCHE': "de la ",
+        'MARNE': "de la ",
+        'HAUTE-MARNE': "de la ",
+        'MAYENNE': "de la ",
+        'MEURTHE-ET-MOSELLE': "de la ",
+        'MEUSE': "de la ",
+        'MORBIHAN': "du ",
+        'MOSELLE': "de la ",
+        'NIÈVRE': "de la ",
+        'NORD': "du ",
+        'OISE': "de l'",
+        'ORNE': "de l'",
+        'PAS-DE-CALAIS': "du ",
+        'PUY-DE-DÔME': "du ",
+        'PYRÉNÉES-ATLANTIQUES': "des ",
+        'HAUTES-PYRÉNÉES': "des ",
+        'PYRÉNÉES-ORIENTALES': "des ",
+        'BAS-RHIN': "du ",
+        'HAUT-RHIN': "du ",
+        'RHÔNE': "de la ",
+        'HAUTE-SAÔNE': "de la ",
+        'SAÔNE-ET-LOIRE': "de la ",
+        'SARTHE': "de la ",
+        'SAVOIE': "de la ",
+        'HAUTE-SAVOIE': "de la ",
+        'PARIS': "de ",
+        'SEINE-MARITIME': "de la ",
+        'SEINE-ET-MARNE': "de la ",
+        'YVELINES': "des ",
+        'DEUX-SÈVRES': "des ",
+        'SOMME': "de la ",
+        'TARN': "de la ",
+        'TARN-ET-GARONNE': "de la ",
+        'VAR': "de la ",
+        'VAUCLUSE': "de la ",
+        'VENDÉE': "de la ",
+        'VIENNE': "de la ",
+        'HAUTE-VIENNE': "de la ",
+        'VOSGES': "des ",
+        'YONNE': "de l'",
+        'TERRITOIRE DE BELFORT': "du ",
+        'ESSONNE': "de l'",
+        'HAUTS-DE-SEINE': "des ",
+        'SEINE-SAINT-DENIS': "de la ",
+        'VAL-DE-MARNE': "du ",
+        "VAL-D'OISE": "du ",
+        'GUADELOUPE': "de la ",
+        'MARTINIQUE': "de la ",
+        'GUYANE': "de la ",
+        'LA RÉUNION': "de la ",
+        'MAYOTTE': "de ",
+    }
+    return switcher.get(argument, "ERROR")
+
+def election(annee, jour, date, departement, cironscription):
+    if annee == 2012:
+        first_tour = pd.read_excel('D:\Downloads\legis\LEGISLATIVES_1958-2012-xls - Copie\cdsp_legi' + str(annee) + 't1_circ.xlsx', index_col=None)
+        second_tour = pd.read_excel('D:\Downloads\legis\LEGISLATIVES_1958-2012-xls - Copie\cdsp_legi' + str(annee) + 't2_circ.xlsx', index_col=None)
+    else:
+        first_tour = pd.read_excel('D:\Downloads\legis\LEGISLATIVES_1958-2012-xls - Copie\cdsp_legi' + str(annee) + 't1_circ.xls', index_col=None)
+        second_tour = pd.read_excel('D:\Downloads\legis\LEGISLATIVES_1958-2012-xls - Copie\cdsp_legi' + str(annee) + 't2_circ.xls', index_col=None)
+
+    first_tour_circo = find_circo(first_tour, departement, cironscription)
+    second_tour_circo = find_circo(second_tour, departement, cironscription)
+
+    if first_tour_circo.empty:
+        pass
+    else:
+        print("=== Élections de ", annee, " ===", sep = '')
+        if annee >= 1981:
+            monotour = exist_second_post(second_tour_circo)
+        else:
+            monotour = exist_second(second_tour_circo)
+        print("| titre = Résultats des élections législatives des ", jour, " ", annee, " de la ", param.circo, "e circonscription ", switch_departement(param.departement), param.departement.title(), sep = '')
+        print("| references = <ref>Résultats des élections législatives françaises premier tour du ", date, " par circonscription, cdsp_legi", annee, "t1_circ.xls [fichier informatique], Banque de Données Socio-Politiques, Grenoble [producteur], Centre de Données Socio-politiques [diffuseur], février 2009.</ref>", sep = '')
+
+        premier_tour(first_tour_circo)
+        if annee >= 1988:
+            corps_post(first_tour_circo, second_tour_circo, monotour, candidat_list)
+        else:
+            subseta = first_tour_circo.iloc[:,7:first_tour_circo.size]
+            subsetb = second_tour_circo.iloc[:,8:second_tour_circo.size]
+            corps(subseta, subsetb, monotour, second_tour_circo)
+        print("\n")
+
 def couleur_hex(argument, order_number):
     switcher = {
         'COM': " = {{Infobox Parti politique français/couleurs|-PCF}}",
@@ -487,6 +623,7 @@ def switch_extremegauche(argument, order_number):
         'empty': " = [[Extrême gauche en France|EXG]]",
         'Lutte Ouvrière': " = [[Lutte ouvrière|LO]]",
         'Lutte Ouvriere': " = [[Lutte ouvrière|LO]]",
+        'Candidat De Lutte Ouvriere': " = [[Lutte ouvrière|LO]]",
         'Ligue Communiste Revolutionnaire': " = [[Ligue communiste révolutionnaire|LCR]]",
         'Nouveau Parti Anticapitaliste': " = [[Nouveau Parti anticapitaliste|NPA]]",
         'Alternatifs (Solidarite, Ecologie, Gauche Alternative)': " = [[Les Alternatifs]]",
@@ -495,6 +632,7 @@ def switch_extremegauche(argument, order_number):
         'Extrême gauche': " = [[Extrême gauche en France|EXG]]",
         'Parti Des Travailleurs': " = [[Parti des travailleurs (France)|PT]]",
         'Gauche Alternative 2007': " = [[Gauche alternative 2007|GP2007]]",
+        'A Gauche Autrement, Sega (Solidarite, Ecologie, Gauche Alternative)': " = {{abréviation|GA|A gauche autrement}}-[[Gauche alternative 2007|GP2007]]",
         'Alternative Rouge Et Verte': " = [[Alternative rouge et verte|ARV]]",
         'Mouvement Pour Un Parti Des Travailleurs (Mppt)': " = [[Mouvement pour un parti des travailleurs|MPPT]]",
         'Sans Etiquette': " = [[Sans étiquette|SE]]",
@@ -505,6 +643,7 @@ def switch_extremegauche(argument, order_number):
         'Candidat D Initiative Pour Une Nouvelle Politique A Gauche': " = {{abréviation|CINPG|Candidat d'initiative pour une nouvelle politique à gauche}}",
         'Voix Des Travailleurs': " = [[Voix des travailleurs|VdT]]",
         'Les Alternatifs-Ecologie-Autogestion': " = [[Les Alternatifs]]-Ecologie-Autogestion",
+        "Gauche Alternative 2012": " = {{abréviation|GA2012|Gauche Alternative 2012}}",
         "Union Pour L'Ecologie Et La Democratie": " = {{abréviation|UED|Union pour l'écologie et la démocratie}}",
         "Autogestion Soutenu Par Les Verts": " = {{abréviation|ALV|Autogestion soutenu par Les Verts}}",
         "Anjou Ecologie Autogestion": " = {{abréviation|AEA|Anjou Ecologie Autogestion}}",
@@ -525,6 +664,7 @@ def switch_diversdroite(argument, order_number):
     switcher = {
         'empty': " = [[Divers droite|DVD]]",
         'Union Pour Un Mouvement Populaire': " = [[Union pour un mouvement populaire|UMP]]",
+        'Parti Republicain': " = [[Parti républicain (France)|PR]]",
         'Mouvement Pour La France': " = [[Mouvement pour la France|MPF]]",
         'Debout La République': " = [[Debout la France|DLR]]",
         'Debout La Republique': " = [[Debout la France|DLR]]",
@@ -539,6 +679,7 @@ def switch_diversdroite(argument, order_number):
         'Rassemblement Pour La France': " = [[Rassemblement pour la France|RPF]]",
         'Union Des Démocrates Pour La République': " = [[Union des démocrates pour la République|UDR]]",
         'Rassemblement Pour La Republique': " = [[Rassemblement pour la République|RPR]]",
+        'Rpr Dissident': " = {{abréviation|diss.|dissident}} [[Rassemblement pour la République|RPR]]",
         'Droite Liberale Chretienne': " = [[Droite libérale-chrétienne|DLC]]",
         'Alternative Liberale': " = [[Alternative libérale|AL]]",
         'Parti De La Loi Naturelle': " = [[Parti de la loi naturelle|PLN]]",
@@ -573,8 +714,10 @@ def switch_diversgauche(argument, order_number):
         'Energie Radicale': " = [[Mouvement des citoyens (France)|MDC]]",
         'Mouvement Républicain Et Citoyen': " = [[Mouvement républicain et citoyen|MRC]]",
         'Parti Socialiste': " = [[Parti socialiste (France)|PS]]",
+        "Rassemblement Pour Initiative Citoyenne": " = {{abréviation|RIC|Rassemblement pour l'initiative citoyenne}}",
         'Republique Et Democratie': " = {{abréviation|RD|République et démocratie}}",
         'Citoyennete Pour Tous De Maine-Et-Loire': " = {{abréviation|CML|Citoyennete pour tous de Maine-et-Loire}}",
+        'Candidat Des Forces De Gauche, Ecologistes Et Republicains De Progres': " = {{abréviation|CFGERP|Candidat des Forces de Gauche, Ecologistes et Républicains de Progrés}}",
         'Gauche Independante': " = {{abréviation|GI|Gauche indépendante}}",
         'Nouvelle Gauche': " = {{abréviation|NG|Nouvelle Gauche}}",
         'Citoyens En Mouvement': " = {{abréviation|CM|Citoyens en Mouvement}}",
@@ -587,6 +730,7 @@ def switch_divers(argument, order_number):
     switcher = {
         'empty': " = Divers",
         'Le Trefle - Les Nouveaux Ecologistes': " = [[Le Trèfle - Les nouveaux écologistes|NERNA]]",
+        'Nouveaux Ecologistes': " = [[Le Trèfle - Les nouveaux écologistes|NE]]",
         'Les Nouveaux Ecologistes Du Rassemblement Nature Et Animaux': " = [[Le Trèfle - Les nouveaux écologistes|NERNA]]",
         'Nouveaux Ecologistes Du Rassemblement Nature Et Animaux': " = [[Le Trèfle - Les nouveaux écologistes|NERNA]]",
         'Parti De La Loi Naturelle': " = [[Parti de la loi naturelle|PLN]]",
@@ -606,6 +750,8 @@ def switch_divers(argument, order_number):
         'Gaulliste':  " = [[Gaullisme|Gaulliste]]",
         'Energies Democrates': " = [[Christian Blanc|Energies democrates]]",
         'Union Pour La Raison Au Pouvoir': " = {{abréviation|URP|Union pour la Raison au Pouvoir}}",
+        'Candidat De Marne Ecologie': " = {{abréviation|ME|Marne Ecologie}}",
+        "Candidat De L'Union Nationale Ecologiste": " = {{abréviation|UNE|Union Nationale Ecologiste}}",
         'Developpement Social Democratie De Proximite': " = {{abréviation|DSDP|Développement Social Démocratie de Proximité}}",
         'Parti Des Socioprofessionnels': " = {{abréviation|PS|Parti des socioprofessionnels}}",
         'Mouvement Pour Une Citoyennete Republicaine': " = {{abréviation|MCR|Mouvement pour une Citoyenneté Républicaine}}",
@@ -619,6 +765,7 @@ def switch_divers(argument, order_number):
         'Union Nationale Ecologiste Sans Emploi': " = {{abréviation|UNESE|Union nationale écologiste sans emploi}}",
         "Parti Des Droits De L'Homme": " = {{abréviation|PDH|Parti des droits de l'Homme}}",
         "Solidaires Regions Ecologie": " = {{abréviation|SRE|Solidaires régions écologie}}",
+        "Union Des Citoyens Independants": " = {{abréviation|UCI|Union des citoyens independants}}",
         "Union Des Citoyens Independants": " = {{abréviation|UCI|Union des citoyens independants}}",
         "Divers": " = {{abréviation|DIV|Divers}}",
         "Union Pour L'Ecologie Et La Democratie": " = {{abréviation|UED|Union pour l'écologie et la démocratie}}",
@@ -638,10 +785,18 @@ def switch_divers(argument, order_number):
         "Alliance Pour L'Ecologie Et La Democratie": " = {{abréviation|AED|Alliance pour l'écologie et la démocratie}}",
         "Droit De Chasse": " = {{abréviation|DC|Droit de chasse}}",
         "Parti Ras Le Bol": " = {{abréviation|PRB|Parti ras le bol}}",
+        "L'Union Nationale Ecologiste Le Parti Pour La Defense Des Animaux Et Le Mouvement Universaliste": " = {{abréviation|UNE|Union Nationale Ecologiste}}-{{abréviation|PD|Parti pour la Défense}}-{{abréviation|MU|Mouvement Universaliste}}",
+        "Union Nationale Ecologiste Le Parti Pour La Defense Des Animaux Et Le Mouvement Universaliste": " = {{abréviation|UNE|Union Nationale Ecologiste}}-{{abréviation|PD|Parti pour la Défense}}-{{abréviation|MU|Mouvement Universaliste}}",
+        "Union Nationale Ecologiste, Le Parti Pour La Defense Des Animaux Et Le Mouvement Universaliste": " = {{abréviation|UNE|Union Nationale Ecologiste}}-{{abréviation|PD|Parti pour la Défense}}-{{abréviation|MU|Mouvement Universaliste}}",
+        "Union Nationale Ecologiste, Parti Pour La Defense Des Animaux Et Le Mouvement Universaliste": " = {{abréviation|UNE|Union Nationale Ecologiste}}-{{abréviation|PD|Parti pour la Défense}}-{{abréviation|MU|Mouvement Universaliste}}",
+        "Union Nationale Ecologiste, Parti Pour La Defense Des Animaux Et Mouvement Universaliste": " = {{abréviation|UNE|Union Nationale Ecologiste}}-{{abréviation|PD|Parti pour la Défense}}-{{abréviation|MU|Mouvement Universaliste}}",
+        "Union Nationale Ecologie, Parti Pour La Defense Des Animaux Et Mouvement Universaliste": " = {{abréviation|UNE|Union Nationale Ecologiste}}-{{abréviation|PD|Parti pour la Défense}}-{{abréviation|MU|Mouvement Universaliste}}",
         "Union Nationale Ecologiste": " = {{abréviation|UNE|Union Nationale Écologiste}}",
+        "Candidate De L'Union Nationale Ecologiste": " = {{abréviation|UNE|Union Nationale Écologiste}}",
         "Ecologie Alternative Autogestion": " = {{abréviation|EAA|Écologie alternative autogestion}}",
         "Rassemblement Des Democrates Et Des Republicains De Progres": " = {{abréviation|RDRP|Rassemblement des démocrate et des républicains de progrès}}",
         "Rassemblement Des Democrate Et Des Republicains De Progres": " = {{abréviation|RDRP|Rassemblement des démocrate et des républicains de progrès}}",
+        "Le Parti De L'Arbre Pour La Sante De La Terre Des Hommes Et Des Generations Futures": " = {{abréviation|PASTHGF|le Parti de l'Arbre pour la Santé de la Terre des Hommes et des Générations Futures}}",
         "Union Democratique Bretonne": " = [[Union démocratique bretonne|UDB]]",
         "Parti De La Loi Naturelle (Pln)": " = [[Parti de la loi naturelle|PLN]]"
     }
@@ -657,6 +812,8 @@ def switch_extremedroite(argument, order_number):
         'Parti Anti-Sioniste': " = [[Parti antisioniste|PAS]]",
         'Defendons La Chasse Et Nos Traditions': " = {{abréviation|DCT|Défendons la chasse et nos traditions}}",
         'Rassemblement Republicain Pour L Union Centriste': " = {{abréviation|RRUC|Rassemblement républicain pour l'union centriste}}",
+        'Candidat Du Rassemblement Des Democrates Et Des Republicains De Progres': " = {{abréviation|RDRP|Rassemblement des Démocrates et des Républicains de Progrés}}",
+        'Candidate Du Rassemblement Des Democrates Et Des Republicains De Progres': " = {{abréviation|RDRP|Rassemblement des Démocrates et des Républicains de Progrés}}",
         'Sans Etiquette': " = [[Sans étiquette|SE]]",
         'Jeune Bretagne': " = [[Jeune Bretagne|JB]]",
         'Alliance Populaire': " = {{abréviation|AP|Alliance Populaire}}",
@@ -665,13 +822,16 @@ def switch_extremedroite(argument, order_number):
         'Parti National Republicain': " = {{abréviation|PNR|Parti national républicain}}",
         'Parti Ouvrier Europeen': " = [[Parti ouvrier européen|POE]]",
         'Solidarite Et Progres': " = {{abréviation|SP|Solidarité et Progrès}}",
-        'Alliance Populaire, Mouvement De Rassemblement National': " = {{abréviation|AP|Alliance populaire}} - {{abréviation|MRN|Mouvement de rassemblement national}}"
+        'Alliance Populaire, Mouvement De Rassemblement National': " = {{abréviation|AP|Alliance populaire}} - {{abréviation|MRN|Mouvement de rassemblement national}}",
+        "Candidate De L'Alliance Populaire": " = {{abréviation|AP|Alliance populaire}}",
+        "Candidat De L'Alliance Populaire": " = {{abréviation|AP|Alliance populaire}}"
     }
     return print_partie(switcher.get(argument, " = " + argument), order_number)
 
 def switch_ecologiste(argument, order_number):
     switcher = {
         'Ecologiste': " = [[Écologisme|ECO]]",
+        'Autre Ecologiste': " = [[Écologisme|ECO]]",
         'empty': " = [[Écologisme|ECO]]",
         'Génération Écologie': " = [[Génération écologie|GE]]",
         'Generation Ecologie': " = [[Génération écologie|GE]]",
@@ -691,6 +851,8 @@ def switch_ecologiste(argument, order_number):
         'Mouvement Des Ecologistes Independants': " = [[Mouvement écologiste indépendant|MEI]]",
         'Cap 21': " = [[Cap21]]",
         'Citoyennete Action Participation Pour Le 21E Siecle': " = {{abréviation|CAP21e|Citoyenneté action participation pour le 21e siècle}}",
+        'Une France Humaine': " = {{abréviation|FH|Une France Humaine}}",
+        'Verts Alternatifs': " = {{abréviation|VA|Verts Alternatifs}}",
         'Anjou Ecologie Autogestion': " = {{abréviation|AEA|Anjou Ecologie Autogestion}}",
         'Union Nationale Ecologiste': " = {{abréviation|UNE|Union nationale écologiste}}",
         'Anjou Ecologie Autogestion': " = {{abréviation|AEA|Anjou Écologie Autogestion}}",
@@ -736,37 +898,6 @@ def switch_communiste(argument, order_number):
     }
     return print_partie(switcher.get(argument, " = " + argument), order_number)
 
-def election(annee, jour, date, departement, cironscription):
-    if annee == 2012:
-        first_tour = pd.read_excel('D:\Downloads\legis\LEGISLATIVES_1958-2012-xls - Copie\cdsp_legi' + str(annee) + 't1_circ.xlsx', index_col=None)
-        second_tour = pd.read_excel('D:\Downloads\legis\LEGISLATIVES_1958-2012-xls - Copie\cdsp_legi' + str(annee) + 't2_circ.xlsx', index_col=None)
-    else:
-        first_tour = pd.read_excel('D:\Downloads\legis\LEGISLATIVES_1958-2012-xls - Copie\cdsp_legi' + str(annee) + 't1_circ.xls', index_col=None)
-        second_tour = pd.read_excel('D:\Downloads\legis\LEGISLATIVES_1958-2012-xls - Copie\cdsp_legi' + str(annee) + 't2_circ.xls', index_col=None)
-
-    first_tour_circo = find_circo(first_tour, departement, cironscription)
-    second_tour_circo = find_circo(second_tour, departement, cironscription)
-
-    if first_tour_circo.empty:
-        pass
-    else:
-        print("=== Élections de ", annee, " ===", sep = '')
-        if annee >= 1981:
-            monotour = exist_second_post(second_tour_circo)
-        else:
-            monotour = exist_second(second_tour_circo)
-        print("| titre = Résultats des élections législatives des ", jour, " ", annee, " de la ", param.circo, "e circonscription du ", param.departement.title(), sep = '')
-        print("| references = <ref>Résultats des élections législatives françaises premier tour du ", date, " par circonscription, cdsp_legi", annee, "t1_circ.xls [fichier informatique], Banque de Données Socio-Politiques, Grenoble [producteur], Centre de Données Socio-politiques [diffuseur], février 2009.</ref>", sep = '')
-
-        premier_tour(first_tour_circo)
-        if annee >= 1988:
-            corps_post(first_tour_circo, second_tour_circo, monotour, candidat_list)
-        else:
-            subseta = first_tour_circo.iloc[:,7:first_tour_circo.size]
-            subsetb = second_tour_circo.iloc[:,8:second_tour_circo.size]
-            corps(subseta, subsetb, monotour, second_tour_circo)
-        print("\n")
-
 url = 'https://query.wikidata.org/sparql'
 query = """
 SELECT DISTINCT ?itemLabel ?sitelink WHERE {
@@ -789,7 +920,7 @@ candidat_list = {}
 for i in range(0,len(data['results']['bindings'])):
   candidat_list[remove_accents(data['results']['bindings'][i]['itemLabel']['value'])] = data['results']['bindings'][i]['sitelink']['value']
 
-sys.argv = ['circo.py', '-d', "MANCHE", '-c', '1']
+sys.argv = ['circo.py', '-d', "MEURTHE-ET-MOSELLE", '-c', '1']
 #on recupere les options utilisateurs
 parser = argparse.ArgumentParser(description="Gap filling programms")
 #recupere le fichier comportant les reads
