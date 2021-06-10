@@ -79,7 +79,8 @@ def corps_post(premier_tour):
             label = str(u) + ' Etiquette liste'
             acces = str(u) + 'Accès second tour'
             print(row[label].title())
-            partie_name_post(row[nuance], row[label].title())
+            pname = partie_name_post(row[nuance], row[label].title())
+            print(pname)
             #verifie l existence d'un candidat supplementaire
             u += 1
             label = str(u) + ' Etiquette liste'
@@ -591,43 +592,58 @@ def partie_name(argument):
 
 def partie_name_post(nuance, etiquette):
     if nuance[:5] == 'MODEM':
-        print(" = [[Mouvement démocrate (France)|MODEM]]")
+        return 'MODEM'
     elif nuance[:5] == 'NouvC':
+        return 'LC'
         print(" = [[Les Centristes|LC]]")
     elif nuance[:4] == 'PSLE':
-        print(" = [[Les Centristes|PSLE]]")
+        return 'LC'
     else:
         switch_partie_recent(nuance, etiquette)
 
 def switch_partie_recent(nuance, etiquette):
     switcher = {
-        'ECI': print(" = {{abréviation|DIV|Divers}}"),
-        'PRV': print(" = [[Parti radical (France)|PRV]]"),
-        'MAJ': print(" = Majorité Présidentielle"),
-        'FRN': print(" = [[Rassemblement national|FN]]"),
-        'VEC': print(" = [[Les Verts (France)|LV]]"),
-        'GEC': print(" = [[Génération écologie|GE]]"),
-        'UDF': print(" = [[Union pour la démocratie française|UDF]]"),
-        'RPR': print(" = [[Rassemblement pour la République|RPR]]"),
-        'PRG': print(" = [[Parti radical de gauche|PRG]]"),
-        'RDG': print(" = [[Parti radical de gauche|PRG]]"),
-        'SOC': print(" = [[Parti socialiste (France)|PS]]"),
-        'SCO': print(" = [[Parti socialiste (France)|PS]]"),
-        'SDC': print(" = [[Parti socialiste (France)|PS]]"),
-        'UMP': print(" = [[Union pour un mouvement populaire|UMP]]"),
-        'FDG': print(" = [[Front de gauche (France)|FDG]]"),
-        'EXO': switch_exocode(etiquette),
-        'REG': switch_regionalisme(etiquette),
-        'EXG': switch_extremegauche(etiquette),
-        'DVD': switch_diversdroite(etiquette),
-        'DVG': switch_diversgauche(etiquette),
-        'DIV': switch_divers(etiquette),
-        'EXD': switch_extremedroite(etiquette),
-        'ECO': switch_ecologiste(etiquette),
-        'COM': switch_communiste(etiquette)
+        'ECI': "DIV",
+        'PRV': "PRV",
+        'MAJ': "MP",
+        'FRN': "FN",
+        'VEC': "LV",
+        'GEC': "GE",
+        'UDF': "UDF",
+        'RPR': "RPR",
+        'PRG': "PRG",
+        'RDG': "PRG",
+        'SOC': "PS",
+        'SCO': "PS",
+        'SDC': "PS",
+        'UMP': "UMP",
+        'FDG': "FDG",
     }
-    print(nuance[:3])
-    print(switcher.get(nuance[:3], lambda: "error"))
+    return switcher.get(nuance[:3], switch_partie_recent_bis(nuance, etiquette))
+
+def switch_partie_recent_bis(nuance, etiquette):
+    if (nuance == 'EXO'):
+        return switch_exocode(etiquette)
+    elif (nuance == 'REG'):
+        return switch_regionalisme(etiquette)
+    elif (nuance == 'EXO'):
+        return switch_exocode(etiquette)
+    elif (nuance == 'EXG'):
+        return switch_extremegauche(etiquette)
+    elif (nuance == 'DVD'):
+        return switch_diversdroite(etiquette)
+    elif (nuance == 'DVG'):
+        return switch_diversgauche(etiquette)
+    elif (nuance == 'DIV'):
+        return switch_divers(etiquette)
+    elif (nuance == 'EXD'):
+        return switch_extremedroite(etiquette)
+    elif (nuance == 'ECO'):
+        return switch_ecologiste(etiquette)
+    elif (nuance == 'COM'):
+        return switch_communiste(etiquette)
+    else:
+        return 'error'
 
 def switch_exocode(argument):
     switcher = {
@@ -638,82 +654,82 @@ def switch_exocode(argument):
 
 def switch_regionalisme(argument):
     switcher = {
-        'empty': " = [[Régionalisme (politique)|REG]]",
-        'Unitat Catalana': " = [[Unitat Catalana|UC]]",
-        'Abertzaleen Batasuna':  " = [[Abertzaleen Batasuna|AB]]",
-        'Union Du Peuple Alsacien':  " = [[Union du peuple alsacien|UPA]]",
-        'Abertzale Nationaliste Basque':  " = [[Abertzaleen Batasuna|AB]]",
-        'Abertzale Nationaliste Basque':  " = [[Abertzaleen Batasuna|AB]]",
-        "Alsace D'Abord, Pour L'Europe Des Regions":  " = [[Alsace d'abord|AA]]",
-        "Alsace D'Abord":  " = [[Alsace d'abord|AA]]",
-        'Erc (Esquarra Republicana Catalana)':  " = [[Gauche républicaine de Catalogne|GRC]]",
-        "Ea Cusko Alkartasuna": " = {{abréviation|ECA|Ea Cusko Alkartasuna}}",
-        "La Radio Des Alsaciens 107 4 Mhz": " = {{abréviation|RA107.4|La radio des alsaciens 107.4 Mhz}}",
-        "Radio Alsaciens 107 4 Mhz": " = {{abréviation|RA107.4|La radio des alsaciens 107.4 Mhz}}",
-        "Entente Des Ecologistes, Les Verts": " = {{abréviation|EE|Entente des écologistes}}-[[Les Verts (France)|LV]]"
+        'empty': "REG",
+        'Unitat Catalana': "UC",
+        'Abertzaleen Batasuna':  "AB",
+        'Union Du Peuple Alsacien':  "UPA",
+        'Abertzale Nationaliste Basque':  "AB",
+        'Abertzale Nationaliste Basque':  "AB",
+        "Alsace D'Abord, Pour L'Europe Des Regions":  "AA",
+        "Alsace D'Abord":  "AA",
+        'Erc (Esquarra Republicana Catalana)':  "GRC",
+        "Ea Cusko Alkartasuna": "REG",
+        "La Radio Des Alsaciens 107 4 Mhz": "REG",
+        "Radio Alsaciens 107 4 Mhz": "REG",
+        "Entente Des Ecologistes, Les Verts": "REG",
     }
-    return print(switcher.get(argument, " = " + argument))
+    return print(switcher.get(argument, "Error : " + argument))
 
 def switch_extremegauche(argument):
     switcher = {
-        'empty': " = [[Extrême gauche en France|EXG]]",
-        'Lutte Ouvrière': " = [[Lutte ouvrière|LO]]",
-        'Lutte Ouvriere': " = [[Lutte ouvrière|LO]]",
-        'Alternative Democratie Socialisme': " = [[Convention pour une alternative progressiste|ADS]]",
-        'Candidat De Lutte Ouvriere': " = [[Lutte ouvrière|LO]]",
-        'Ligue Communiste Revolutionnaire': " = [[Ligue communiste révolutionnaire|LCR]]",
-        'Ligue Communiste Revolutionnaire (Dissident)': " = {{abréviation|diss|dissident}} [[Ligue communiste révolutionnaire|LCR]]",
-        'Nouveau Parti Anticapitaliste': " = [[Nouveau Parti anticapitaliste|NPA]]",
-        'Alternatifs (Solidarite, Ecologie, Gauche Alternative)': " = [[Les Alternatifs]]",
-        'Gauche Alternative Et Ecologiste': " = [[Les Alternatifs]]",
-        'Les Alternatifs': " = [[Les Alternatifs]]",
-        'Extreme Gauche': " = [[Extrême gauche en France|EXG]]",
-        'Extrême gauche': " = [[Extrême gauche en France|EXG]]",
-        'Parti Pour La Décroissance': " = [[Parti pour la décroissance|PPLD]]",
-        'Parti Des Travailleurs': " = [[Parti des travailleurs (France)|PT]]",
-        'Parti Des Travailâ­Leurs': " = [[Parti des travailleurs (France)|PT]]",
-        'Mouvement De La Gauche Progressiste': " = [[Mouvement de la gauche progressiste|MGP]]",
-        'Gauche Alternative 2007': " = [[Gauche alternative 2007|GP2007]]",
-        'A Gauche Autrement, Sega (Solidarite, Ecologie, Gauche Alternative)': " = {{abréviation|GA|A gauche autrement}}-[[Gauche alternative 2007|GP2007]]",
-        'Alternative Rouge Et Verte': " = [[Alternative rouge et verte|ARV]]",
-        'Mouvement Pour Un Parti Des Travailleurs (Mppt)': " = [[Mouvement pour un parti des travailleurs|MPPT]]",
-        'Sans Etiquette': " = [[Sans étiquette|SE]]",
-        'Solidarite, Ecologie, Gauche Alternative (Sega)': " = [[Gauche alternative 2007|SEGA]]",
-        'Solidarite Ecologie Gauche Alternative (Sega)': " = [[Gauche alternative 2007|SEGA]]",
-        'Solidarite, Ecologie Gauche Alternative': " = [[Gauche alternative 2007|SEGA]]",
-        'Solidarite Ecologie Gauche Alternative': " = [[Gauche alternative 2007|SEGA]]",
-        "Mouvement Ecologiste De L'Anjou, Solidarite, Ecologie Gauche Alternative (Sega)": " = {{abréviation|MEA|Mouvement Ecologiste de l'Anjou}}-[[Gauche alternative 2007|SEGA]]",
-        'Candidat D Initiative Pour Une Nouvelle Politique A Gauche': " = {{abréviation|CINPG|Candidat d'initiative pour une nouvelle politique à gauche}}",
-        'Voix Des Travailleurs': " = [[Voix des travailleurs|VdT]]",
-        'Les Alternatifs-Ecologie-Autogestion': " = [[Les Alternatifs]]-Ecologie-Autogestion",
-        "Gauche Alternative 2012": " = {{abréviation|GA2012|Gauche Alternative 2012}}",
-        "A Gauche Autrement": " = {{abréviation|GA|A Gauche Autrement}}",
-        "Ligue Socialiste Des Travailleurs": " = {{abréviation|LST|Ligue Socialiste des Travailleurs}}",
-        "Ecologie Pacifisme Objection De Croissance": " = {{abréviation|EPOC|Écologie pacifisme objection de croissance}}",
-        "Changer A Gauche": " = {{abréviation|CG|Changer à gauche}}",
-        "Comite Pour La Defense Du Regime Local": " = {{abréviation|CDRL|Comite pour la défense du régime local}}",
-        "Tous Ensemble A Gauche": " = {{abréviation|TEG|Tous ensemble à gauche}}",
-        "Collectif Antiliberal Du Pays De Lorient": " = {{abréviation|CG|Collectif antilibéral du pays de Lorient}}",
-        "100% A Gauche - Lcr": " = {{abréviation|100%|100% à gauche}}-[[Ligue communiste révolutionnaire|LCR]]",
-        "L.C.R. 100% A Gauche": " = {{abréviation|100%|100% à gauche}}-[[Ligue communiste révolutionnaire|LCR]]",
-        "Union Pour L'Ecologie Et La Democratie": " = {{abréviation|UED|Union pour l'écologie et la démocratie}}",
-        "Autogestion Soutenu Par Les Verts": " = {{abréviation|ALV|Autogestion soutenu par Les Verts}}",
-        "Anjou Ecologie Autogestion": " = {{abréviation|AEA|Anjou Ecologie Autogestion}}",
-        "A Gauche Toute Collectif Pour Une Gauc": " = {{abréviation|GCG|A Gauche toute Collectif pour une Gauche}}",
-        "Pole Rennaissance Communiste En France": " = [[Pôle de renaissance communiste en France|PRCF]]",
-        'Union Pour La Gauche Renovee': " = {{abréviation|UGR|Union pour la gauche rénovée}}",
-        'Initiative Pour Une Nouvelle Politique Gauche': " = {{abréviation|INPG|Initiative pour une nouvelle politique gauche}}",
-        'Candidat D Initiative Pour Une Nouvelle Politique De Gauche': " = {{abréviation|INPG|Initiative pour une nouvelle politique gauche}}",
-        'Tous Ensemble A Gauche': " = {{abréviation|TEG|Tous ensemble à gauche}}",
-        "Parti Ouvrier Indépendant": " = [[Parti ouvrier indépendant|POI]]",
-        'A Gauche Vraiment': " = {{abréviation|GV|A gauche vraiment}}",
-        'Mouvement A Gauche Vraiment': " = {{abréviation|GV|A gauche vraiment}}",
-        'Gauche Alternative': " = {{abréviation|GA|Gauche Alternative}}",
-        'Parti Des Evidences Concretes': " = {{abréviation|PEC|Parti des Évidences Concrètes}}",
-        'Pour Une Nouvelle Politique A Gauche': " = {{abréviation|NPG|Pour une nouvelle politique à gauche}}",
-        'Rassemblement Utile A Tous': " = {{abréviation|RUT|Rassemblement utile à tous}}"
+        'empty': "EXG",
+        'Lutte Ouvrière': "LO",
+        'Lutte Ouvriere': "LO",
+        'Alternative Democratie Socialisme': "ADS",
+        'Candidat De Lutte Ouvriere': "LO",
+        'Ligue Communiste Revolutionnaire': "LCR",
+        'Ligue Communiste Revolutionnaire (Dissident)': "LCR",
+        'Nouveau Parti Anticapitaliste': "NPA",
+        'Alternatifs (Solidarite, Ecologie, Gauche Alternative)': "Alternatif",
+        'Gauche Alternative Et Ecologiste': "Alternatif",
+        'Les Alternatifs': "Alternatif",
+        'Extreme Gauche': "EXG",
+        'Extrême gauche': "EXG",
+        'Parti Pour La Décroissance': "PPLD",
+        'Parti Des Travailleurs': "PT",
+        'Parti Des Travailâ­Leurs': "PT]]",
+        'Mouvement De La Gauche Progressiste': "MGP",
+        'Gauche Alternative 2007': "GP2007",
+        'A Gauche Autrement, Sega (Solidarite, Ecologie, Gauche Alternative)': "GP2007",
+        'Alternative Rouge Et Verte': "ARV",
+        'Mouvement Pour Un Parti Des Travailleurs (Mppt)': "MPPT",
+        'Sans Etiquette': "EXG",
+        'Solidarite, Ecologie, Gauche Alternative (Sega)': "SEGA",
+        'Solidarite Ecologie Gauche Alternative (Sega)': "SEGA",
+        'Solidarite, Ecologie Gauche Alternative': "SEGA",
+        'Solidarite Ecologie Gauche Alternative': "SEGA",
+        "Mouvement Ecologiste De L'Anjou, Solidarite, Ecologie Gauche Alternative (Sega)": "SEGA",
+        'Candidat D Initiative Pour Une Nouvelle Politique A Gauche': "EXG",
+        'Voix Des Travailleurs': "VdT",
+        'Les Alternatifs-Ecologie-Autogestion': "Alternatif",
+        "Gauche Alternative 2012": "EXG",
+        "A Gauche Autrement": "EXG",
+        "Ligue Socialiste Des Travailleurs": "EXG",
+        "Ecologie Pacifisme Objection De Croissance": "EXG",
+        "Changer A Gauche": "EXG",
+        "Comite Pour La Defense Du Regime Local": "EXG",
+        "Tous Ensemble A Gauche": "EXG",
+        "Collectif Antiliberal Du Pays De Lorient": "EXG",
+        "100% A Gauche - Lcr": "LCR",
+        "L.C.R. 100% A Gauche": "LCR",
+        "Union Pour L'Ecologie Et La Democratie": "EXG",
+        "Autogestion Soutenu Par Les Verts": "EXG",
+        "Anjou Ecologie Autogestion": "EXG",
+        "A Gauche Toute Collectif Pour Une Gauc": "EXG",
+        "Pole Rennaissance Communiste En France": "PRCF",
+        'Union Pour La Gauche Renovee': "EXG",
+        'Initiative Pour Une Nouvelle Politique Gauche': "EXG",
+        'Candidat D Initiative Pour Une Nouvelle Politique De Gauche': "EXG",
+        'Tous Ensemble A Gauche': "EXG",
+        "Parti Ouvrier Indépendant": "POI",
+        'A Gauche Vraiment': "EXG",
+        'Mouvement A Gauche Vraiment': "EXG",
+        'Gauche Alternative': "EXG",
+        'Parti Des Evidences Concretes': "EXG",
+        'Pour Une Nouvelle Politique A Gauche': "EXG",
+        'Rassemblement Utile A Tous': "EXG",
     }
-    return print(switcher.get(argument, " = " + argument))
+    return switcher.get(argument, "Error: " + argument)
 
 def switch_diversdroite(argument):
     switcher = {
