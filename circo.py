@@ -309,11 +309,11 @@ def switch_departement(argument):
 
 def election(annee, jour, date, departement, cironscription):
     if annee == 2012:
-        first_tour = pd.read_excel('/home/adrien/Documents/legis/excel_file/cdsp_legi' + str(annee) + 't1_circ.xlsx', index_col=None)
-        second_tour = pd.read_excel('/home/adrien/Documents/legis/excel_file/cdsp_legi' + str(annee) + 't2_circ.xlsx', index_col=None)
+        first_tour = pd.read_excel('/mnt/d/Downloads/wikipedia_scripts-main/excel_file/cdsp_legi' + str(annee) + 't1_circ.xlsx', index_col=None)
+        second_tour = pd.read_excel('/mnt/d/Downloads/wikipedia_scripts-main/excel_file/cdsp_legi' + str(annee) + 't2_circ.xlsx', index_col=None)
     else:
-        first_tour = pd.read_excel('/home/adrien/Documents/legis/excel_file/cdsp_legi' + str(annee) + 't1_circ.xls', index_col=None)
-        second_tour = pd.read_excel('/home/adrien/Documents/legis/excel_file/cdsp_legi' + str(annee) + 't2_circ.xls', index_col=None)
+        first_tour = pd.read_excel('/mnt/d/Downloads/wikipedia_scripts-main/excel_file/cdsp_legi' + str(annee) + 't1_circ.xls', index_col=None)
+        second_tour = pd.read_excel('/mnt/d/Downloads/wikipedia_scripts-main/excel_file/cdsp_legi' + str(annee) + 't2_circ.xls', index_col=None)
 
     first_tour_circo = find_circo(first_tour, departement, cironscription)
     second_tour_circo = find_circo(second_tour, departement, cironscription)
@@ -691,6 +691,7 @@ def switch_extremegauche(argument, order_number):
         'Les Alternatifs': " = [[Les Alternatifs]]",
         'Extreme Gauche': " = [[Extrême gauche en France|EXG]]",
         'Extrême gauche': " = [[Extrême gauche en France|EXG]]",
+        'Parti Socialiste': " = [[Extrême gauche en France|EXG]]",
         'Parti Pour La Décroissance': " = [[Parti pour la décroissance|PPLD]]",
         'Parti Des Travailleurs': " = [[Parti des travailleurs (France)|PT]]",
         'Parti Des Travailâ­Leurs': " = [[Parti des travailleurs (France)|PT]]",
@@ -708,6 +709,7 @@ def switch_extremegauche(argument, order_number):
         'Solidarite Ecologie, Gauche Alternative': " = [[Gauche alternative 2007|SEGA]]",
         "Solidarite Ecologie ,Gauche Alternative": " = [[Gauche alternative 2007|SEGA]]",
         "Solidarite Ecologie, Gauche Alternative Economie Gestion": " = [[Gauche alternative 2007|SEGA]]",
+        "Parti Des Objecteurs De Croissance": " = [[Décroissance]]",
         "Mouvement Ecologiste De L'Anjou, Solidarite, Ecologie Gauche Alternative (Sega)": " = {{abréviation|MEA|Mouvement Ecologiste de l'Anjou}}-[[Gauche alternative 2007|SEGA]]",
         'Candidat D Initiative Pour Une Nouvelle Politique A Gauche': " = {{abréviation|CINPG|Candidat d'initiative pour une nouvelle politique à gauche}}",
         'Mouvement Alternative Pour La Democratie Et Le Socialisme Communistes Reconstructeurs': " = {{abréviation|MADSCR|Mouvement Alternative pour la Démocratie et le Socialisme Communistes Reconstructeurs}}",
@@ -769,7 +771,9 @@ def switch_extremegauche(argument, order_number):
         'Gauche Alternative': " = {{abréviation|GA|Gauche Alternative}}",
         'Yvelines Décroissance': " = {{abréviation|YD|Yvelines Décroissance}}",
         'Ecologie A Gauche Vraiment': " = {{abréviation|EGV|Ecologie à Gauche Vraiment}}",
+        'Candidat Se Declarant Antimilitariste': " = {{abréviation|AM|Antimilitariste}}",
         'Moral Politic': " = {{abréviation|MP|Moral Politic}}",
+        'Comite D Initiative Pour Une Nouvelle Politique A Gauche': " = {{abréviation|CINPG|Comité d'initiative pour une nouvelle politique à gauche}}",
         'Parti Des Evidences Concretes': " = {{abréviation|PEC|Parti des Évidences Concrètes}}",
         'Pour Une Nouvelle Politique A Gauche': " = {{abréviation|NPG|Pour une nouvelle politique à gauche}}",
         'Pour L Initiative Pour Une Nouvelle Politique A Gauche': " = {{abréviation|NPG|Pour l'initiative pour une nouvelle politique à gauche}}",
@@ -805,10 +809,12 @@ def switch_diversdroite(argument, order_number):
         'Centre National Des Independants Et Paysans Cni': " = [[Centre national des indépendants et paysans|CNIP]]",
         'Cnip': " = [[Centre national des indépendants et paysans|CNIP]]",
         'Centre National Des Independants': " = [[Centre national des indépendants et paysans|CNI]]",
+        'Democratie Chretienne Cni': " = {{abréviation|DC|Démocratie Chrétienne}} [[Centre national des indépendants et paysans|CNI]]",
         'Droite De Conviction Pour La Defense Des Valeurs': " = {{abréviation|DCDV|Droite de conviction pour la défense des valeurs}}",
         'Droite De Conviction Pour La Defense Des Valeurs Presente Par Le Centre National Des Independants Et Paysans Cni': " = {{abréviation|DCDV|Droite de conviction pour la défense des valeurs}}-[[Centre national des indépendants et paysans|CNI]]",
         'Droite De Conviction Pour La Defense Des Valeurs Presente Par Le Centre National Des Independants Et Paysans (Cni) Et La Democratie Chretienne Francaise (Dcf)': " = {{abréviation|DCDV|Droite de conviction pour la défense des valeurs}}-[[Centre national des indépendants et paysans|CNI]]-{{abréviation|DCF|Démocratie Chrétienne Française}}",
         'Droite De Conviction Pour La Defense Des Valeurs Presente Par Le Centre National Des Independants Et Paysans Et La Democratie Chretienne Francaise': " = {{abréviation|DCDV|Droite de conviction pour la défense des valeurs}}-[[Centre national des indépendants et paysans|CNI]]-{{abréviation|DCF|Démocratie Chrétienne Française}}",
+        'Droite De Conviction Pour La Defense Des Valeurs, Presente Par Le Centre National Des Independants Et Paysans, Cni, Et La Democratie Chretienne Francaise': " = {{abréviation|DCDV|Droite de conviction pour la défense des valeurs}}-[[Centre national des indépendants et paysans|CNI]]-{{abréviation|DCF|Démocratie Chrétienne Française}}",
         'Parti Chrétien-Démocrate': " = [[VIA, la voie du peuple|PCD]]",
         'Union Républicaine Populaire': " = [[Union populaire républicaine (2007)|UPR]]",
         'Divers Droite': " = [[Divers droite|DVD]]",
@@ -822,6 +828,8 @@ def switch_diversdroite(argument, order_number):
         'Union Des Démocrates Pour La République': " = [[Union des démocrates pour la République|UDR]]",
         'Mouvement De M. Jeannou Lacaze Candidat Union Des Democrates': " = [[Union des démocrates pour la République|UDR]]",
         'Rassemblement Pour La Republique': " = [[Rassemblement pour la République|RPR]]",
+        'Divers Droite, Union Pour Une Future Majorite Parlementaire Qui Prenne En Compte Les Interets Du Boulonnais': " = [[Divers droite|DVD]]",
+        'Union Pour La France (Rpr, Udf, Cni)': " = [[Rassemblement pour la République|RPR]]-[[Union pour la démocratie française|UDF]]-[[Centre national des indépendants et paysans|CNI]]",
         "Union De L'Opposition Udf-Rpr": " = [[Union pour la démocratie française|UDF]]-[[Rassemblement pour la République|RPR]]",
         'Renouveau Du Mantois, Centre National Des Independants Et Paysans': " = {{abréviation|RM|Renouveau du Mantois}} [[Centre national des indépendants et paysans|CNIP]]",
         "Udf Dissident": " = {{abréviation|diss.|dissident}} [[Union pour la démocratie française|UDF]]",
@@ -842,6 +850,7 @@ def switch_diversdroite(argument, order_number):
         'Mouvement Des Reformateurs': " = [[Mouvement des réformateurs|MDR]]",
         'Mouvements Des Reformateurs': " = [[Mouvement des réformateurs|MDR]]",
         'Entente Centriste': " = {{abréviation|EC|Entente Centriste}}",
+        'Union de la droite republicaine': " = {{abréviation|UDR|Union de la droite républicaine}}",
         'Guadeloup Doubout': " = {{abréviation|GD|Guadeloup Doubout}}",
         'La Nouvelle Majorite Parti Democrate Francais': " = {{abréviation|NMDF|La nouvelle majorité parti démocrate francais}}",
         'Rassemblement Pour Une Veritable Ouverture Sociale Et Liberale': " = {{abréviation|RVOSL|Rassemblement pour une véritable ouverture sociale et libérale}}",
@@ -849,8 +858,10 @@ def switch_diversdroite(argument, order_number):
         'Renouveau Centriste': " = {{abréviation|RC|Renouveau Centriste}}",
         'Rassemblement Des Centristes Et Des Democrates Sociaux De La Gaudeloupe': " = {{abréviation|RCDSG|Rassemblement des centristes et des démocrates sociaux de la Gaudeloupe}}",
         'Candidat Independant': " = {{abréviation|CI|Candidat Indépendant}}",
+        'Union Pour Le Changement': " = {{abréviation|UC|Union pour le Changement}}",
         'Parti Régionaliste Martiniquais': " = {{abréviation|PRM|Parti Régionaliste Martiniquais}}",
         'Independant Apolitique': " = {{abréviation|IA|Indépendant Apolitique}}",
+        'Union Du Rassemblement De La Droite': " = {{abréviation|URD|Union du Rassemblement de la Droite}}",
         'Foute Fe Pour La Guadeloupe': " = {{abréviation|TFG|Foute Fe pour la Guadeloupe}}",
         'Independant Pour Le Val-De-Marne ': " = {{abréviation|IVM|Indépendant pour le Val-de-Marne}}",
         'Pour Une Politique Francaise Aux Dom Tom': " = {{abréviation|PFDT|Pour une politique francaise dux Dom Tom}}",
@@ -990,6 +1001,8 @@ def switch_diversgauche(argument, order_number):
         'Parti Socialiste Dissident': " = {{abréviation|diss.|dissident}} [[Parti socialiste (France)|PS]]",
         "Rassemblement Pour Initiative Citoyenne": " = {{abréviation|RIC|Rassemblement pour l'initiative citoyenne}}",
         "Clichy Reconciliee": " = {{abréviation|CR|Clichy Réconciliée}}",
+        "Mouv Rassemblement Soc-Dem-Rep": " = {{abréviation|SOC-DEM-REP|Mouvement Rassemblement Soc-Dem-Rep}}",
+        "Union Victimes De L'Etat": " = {{abréviation|UVE|Union Victimes de l'Etat}}",
         "Parti De L'Union Radicale": " = {{abréviation|UR|Union Radicale}}",
         "Groupe Bouillantais De Reflexion Et D'Action Sociale": " = {{abréviation|GBRAS|Groupe bouillantais de réflexion et d'action sociale}}",
         "Collectif Des Inkoruptibles": " = {{abréviation|CI|Collectif des Inkoruptibles}}",
@@ -1104,11 +1117,14 @@ def switch_divers(argument, order_number):
         'Parti Des Génovéfains': " = {{abréviation|Génovéfains|Parti des Génovéfains}}",
         'Collectif Des Democrates Handicapes': " = {{abréviation|CDH|Collectif des Démocrates Handicapés}}",
         'Yvelines Ecologie': " = {{abréviation|YE|Yvelines Ecologie}}",
+        'Parti Union Justice Et Travail': " = {{abréviation|UJT|Parti Union Justice et Travail}}",
         'Sos Papa': " = {{abréviation|SP|Sos Papa}}",
+        "Union Victimes De L'Etat": " = {{abréviation|UVE|Union Victimes de l'Etat}}",
         'Union Action': " = {{abréviation|UA|Union Action}}",
         'Guadeloupe Nature Et Environnement': " = {{abréviation|GNE|Guadeloupe Nature et Environnement}}",
         'Independantiste': " = Indépendantiste",
         'Professionnels De Sante': " = {{abréviation|PS|Professionnels de santé}}",
+        'Parti De La Politique Interculturelle': " = {{abréviation|PPI|Parti de la politique interculturelle}}",
         'Rdc-Mdr': " = RDC-MDR",
         'Mouvement Citoyennete Democratie': " = {{abréviation|MCD|Mouvement Citoyenneté Démocratie}}",
         'Cannabis Santé Libertés Justice': " = {{abréviation|CSLJ|Cannabis Santé Libertés Justice}}",
@@ -1280,6 +1296,7 @@ def switch_extremedroite(argument, order_number):
         'Jeune Bretagne': " = [[Jeune Bretagne|JB]]",
         'Bloc Identitaire': " = [[Les Identitaires|BI]]",
         'Alliance Populaire': " = {{abréviation|AP|Alliance Populaire}}",
+        'Candidat D Opposition Unitaire Et Nationale': " = {{abréviation|OUN|Opposition Unitaire et Nationale}}",
         'Mouvement De Rassemblement National': " = {{abréviation|MRN|Mouvement de Rassemblement National}}",
         'Mouvement De Rassemblement National Alliance Populaire': " = {{abréviation|MRNAP|Mouvement de Rassemblement National Alliance Populaire}}",
         "Alsace Debout Contre L'Insecurite Et L'Immigration": " = {{abréviation|ADII|Alsace debout contre l'insécurité et l'immigration}}",
@@ -1299,6 +1316,7 @@ def switch_extremedroite(argument, order_number):
         'Parti Ouvrier Europeen': " = [[Parti ouvrier européen|POE]]",
         'Parit Ouvrier Europeen': " = [[Parti ouvrier européen|POE]]",
         'Parti Ouvrier Europeen': " = [[Parti ouvrier européen|POE]]",
+        'Federation Nationale Des Independants': " = [[Fédération nationale des indépendants|FNI]]",
         'Solidarite Et Progres': " = {{abréviation|SP|Solidarité et Progrès}}",
         "Halte A L'Immigration Avec L'Alliance Populaire": " = {{abréviation|HIAP|Halte à l'Immigration avec l'Alliance Populaire}}",
         'Parti Populaire Français': " = {{abréviation|PPF|Parti Populaire Français}}",
@@ -1356,6 +1374,8 @@ def switch_ecologiste(argument, order_number):
         'Ecologie Pour L Alsace Du Nord': " = {{abréviation|FH|Écologie pour l'Alsace du nord}}",
         'Ecologie Artisanale': " = {{abréviation|EA|Écologie Artisanale}}",
         'Ecologie Europe 92': " = {{abréviation|EE92|Ecologie Europe 92}}",
+        'Union Des Ecologistes Haut-Alpins': " = {{abréviation|UEHA|Union des écologistes Haut-Alpins}}",
+        'Generation Ecologie Les Bleus	': " = [[Génération écologie|GE]]-{{abréviation|LB|Les Bleus}}",
         'Ecologie Nature Environnement': " = {{abréviation|ENE|Ecologie Nature Environnement}}",
         'Verts Alternatifs': " = {{abréviation|VA|Verts Alternatifs}}",
         'Verte Alternative': " = {{abréviation|VA|Verts Alternatifs}}",
@@ -1411,14 +1431,19 @@ def switch_communiste(argument, order_number):
         'Parti Commuâ­Niste Francais': " = [[Parti communiste français|PCF]]",
         'Communiste Francais ': " = [[Parti communiste français|PCF]]",
         'Forces De Gauche Pcf': " = [[Parti communiste français|PCF]]",
+        'Pcf - Antiliberaux': " = [[Parti communiste français|PCF]]",
         'Parti Communiste Francais Dissident': " = [[Parti communiste français|PCF]]",
         'Candidate De Rassemblement Des Forces De Gauche Presentee Par Le P C F': " = [[Parti communiste français|PCF]]",
+        'Apparente Parti Communiste Francais': " = [[Parti communiste français|PCF]]",
+        'Candidat Des Forces De Gauches Presente Par Le P C F': " = [[Parti communiste français|PCF]]",
         'Candidat De Rassemblement Presente Par Le Parti Comâ­Muniste Francais': " = [[Parti communiste français|PCF]]",
         'Candidat De Rassemblement Presente Par Le Pcf': " = [[Parti communiste français|PCF]]",
         'Rassemblement Des Forces De Gauche Presente Par Le P C F': " = [[Parti communiste français|PCF]]",
         'Candidat De Rassemblement Des Forces De Gauche Presente Par Le Pcf': " = [[Parti communiste français|PCF]]",
+        'Candidat De Rassemblement Pour Faire Du Neuf Avec Vous Pour La France, Presente Par Le Parti Communiste Francais': " = [[Parti communiste français|PCF]]",
         'Candidat De Rassemblement Presente Par Le Parti Communiste Francais': " = [[Parti communiste français|PCF]]",
         'Candidat De Rassemblement Des Forces De Gauche Presente Par Le P C F': " = [[Parti communiste français|PCF]]",
+        'Candidat Du Rassemblement A Gauche Pour Une Autre Politique Presente Par Le Parti Communiste Francais': " = [[Parti communiste français|PCF]]",
         'Candidat De Ressemblement Des Forces De Gauche Presente Par Le Parti Communiste Francais': " = [[Parti communiste français|PCF]]",
         'Candidat De Rassemblement Des Forces De Progres Presente Par Le Parti Communiste Francais': " = [[Parti communiste français|PCF]]",
         'Candidat De Rassemblement Pour Se Defendre Et Faire Du Neuf Presente Par Le Parti Communiste Francais': " = [[Parti communiste français|PCF]]",
@@ -1428,6 +1453,7 @@ def switch_communiste(argument, order_number):
         'Rassemblement Par Le Parti Communiste Francais': " = [[Parti communiste français|PCF]]",
         'Rassemblement Pour Se Defendre Et Faire Du Neuf Presente Par Le Parti Communiste Francais': " = [[Parti communiste français|PCF]]",
         'Presentee Par Le Parti Communiste Francais Se Rassembler Pour Se Defendre Et Faire Du Neuf': " = [[Parti communiste français|PCF]]",
+        'Candidat Du Rassemblement Des Forces De Progres Presente Par Le Parti Communiste Francais': " = [[Parti communiste français|PCF]]",
         'Rassemblement Des Forces De Gauche Presente Par Le Pcf': " = [[Parti communiste français|PCF]]",
         'Rassemblement Des Forces De Gauche Presente Par Le Parti Communiste Francais': " = [[Parti communiste français|PCF]]",
         'Parti Communiste Francais Pour Le Rassemblement Des Forces Progressistes Et Le Changement': " = [[Parti communiste français|PCF]]",
@@ -1446,6 +1472,7 @@ def switch_communiste(argument, order_number):
         'Rassemblement Des Citoyens Pour Le Progres': " = {{abréviation|RCP|Rassemblement des citoyens pour le progrès}}",
         'Rassemblement Pour La Gauche': " = {{abréviation|RG|Rassemblement pour la gauche}}",
         'Mouvement Refondations': " = {{abréviation|MR|Mouvement Refondations}}",
+        'Communiste Renovateur': " = {{abréviation|CR|Communiste Rénovateur}}",
         'Gauche Unie Antiliberale': " = {{abréviation|GUA|Gauche Unie Antilibérale}}",
         'Candidat Du Rassemblement Et Des Forces De Progres': " = {{abréviation|RFP|Rassemblement et des forces de progrès}}",
         'Collectif Unitaire Antiliberal': " = {{abréviation|CUA|Collectif Unitaire Antilibéral}}",
@@ -1477,7 +1504,7 @@ candidat_list = {}
 for i in range(0,len(data['results']['bindings'])):
   candidat_list[remove_accents(data['results']['bindings'][i]['itemLabel']['value'])] = data['results']['bindings'][i]['sitelink']['value']
 
-sys.argv = ['circo.py', '-d', "MARTINIQUE", '-c', '2']
+sys.argv = ['circo.py', '-d', "PAS-DE-CALAIS", '-c', '14']
 #on recupere les options utilisateurs
 parser = argparse.ArgumentParser(description="Gap filling programms")
 #recupere le fichier comportant les reads
