@@ -1,0 +1,22 @@
+SELECT ?item ?cityLabel ?INSEEmunicipalitycode
+WHERE {
+  VALUES ?cityLabel { "Ambeyrac"@fr
+                      "Balaguier-d'Olt"@fr
+                      "La Capelle-Balaguier"@fr
+                      "Causse-et-Diège"@fr
+                      "Foissac"@fr
+                      "Martiel"@fr
+                      "Montsalès"@fr
+                      "Ols-et-Rinhodes"@fr
+                      "Sainte-Croix"@fr
+                      "Salvagnac-Cajarc"@fr
+                      "Saujac"@fr
+                      "Villeneuve"@fr
+                    }
+  #?item wdt:P31 wd:Q484170. # Ce doit être une commune
+  ?sitelink schema:about ?item;
+    schema:isPartOf <https://fr.wikipedia.org/>;
+    schema:name ?cityLabel.
+  OPTIONAL{?item wdt:P374 ?INSEEmunicipalitycode .}
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". } # le label viendra de préférence dans votre langue, et autrement en anglais
+}
